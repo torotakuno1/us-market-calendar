@@ -2,7 +2,7 @@
 Major US Earnings Fetcher
 ==========================
 S&P500上位 + セクター代表の決算日を取得。
-データソース: yfinance（無料）
+BMO(寄前) / AMC(引後) を判定して表示。
 """
 
 import json
@@ -12,42 +12,47 @@ from typing import Optional
 from config import MAJOR_EARNINGS_TICKERS, Importance, make_summary
 from utils import Event, et_to_utc, ET, UTC
 
-# セクター分類（iPhone表示で簡潔にグルーピング）
+# セクター分類
 SECTOR_MAP = {
-    # Mag7
     "AAPL": "Tech", "MSFT": "Tech", "GOOGL": "Tech", "AMZN": "Cons",
     "META": "Tech", "NVDA": "Semi", "TSLA": "Auto",
-    # 半導体
     "TSM": "Semi", "AVGO": "Semi", "AMD": "Semi", "INTC": "Semi",
     "QCOM": "Semi", "TXN": "Semi", "ASML": "Semi", "MU": "Semi",
-    # 金融
     "JPM": "Fin", "BAC": "Fin", "GS": "Fin", "MS": "Fin",
     "WFC": "Fin", "C": "Fin", "BLK": "Fin", "SCHW": "Fin",
-    # ヘルスケア
     "UNH": "HC", "JNJ": "HC", "LLY": "HC", "PFE": "HC",
     "ABBV": "HC", "MRK": "HC", "TMO": "HC",
-    # 消費
     "WMT": "Cons", "COST": "Cons", "HD": "Cons", "MCD": "Cons",
     "NKE": "Cons", "SBUX": "Cons", "TGT": "Cons", "PG": "Cons",
-    # エネルギー
     "XOM": "Ene", "CVX": "Ene", "SLB": "Ene", "COP": "Ene", "FCX": "Mat",
-    # 工業
     "CAT": "Ind", "BA": "Ind", "GE": "Ind", "UPS": "Ind",
     "HON": "Ind", "RTX": "Ind", "DE": "Ind", "LMT": "Ind",
-    # 通信/メディア
     "DIS": "Media", "NFLX": "Media", "CMCSA": "Media", "T": "Tel", "VZ": "Tel",
-    # その他
     "V": "Fin", "MA": "Fin", "PYPL": "Fin", "CRM": "Tech",
     "ORCL": "Tech", "ADBE": "Tech", "NOW": "Tech",
     "COIN": "Fin", "SQ": "Fin", "ABNB": "Cons", "UBER": "Cons",
 }
 
-# 超大型＝★★★、大型＝★★、それ以外＝★
 TOP_TIER = {"AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", "JPM"}
 MID_TIER = {
     "BAC", "GS", "MS", "WFC", "TSM", "AVGO", "AMD",
     "UNH", "JNJ", "LLY", "WMT", "XOM", "NFLX",
     "CRM", "V", "MA", "CAT", "BA",
+}
+
+# 既知のBMO/AMCパターン（フォールバック用）
+# BMO = Before Market Open (寄前), AMC = After Market Close (引後)
+KNOWN_BMO = {
+    "JPM", "BAC", "GS", "MS", "WFC", "C", "BLK", "SCHW",  # 銀行は基本寄前
+    "UNH", "JNJ", "PG", "WMT", "CAT", "BA", "HON", "RTX",
+    "LMT", "GE", "UPS", "DE", "MCD", "VZ", "T",
+    "PFE", "MRK", "ABBV", "TMO", "LLY",
+}
+KNOWN_AMC = {
+    "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA",  # ビッグテック引後
+    "NVDA", "AMD", "INTC", "QCOM", "NFLX", "CRM",
+    "ADBE", "NOW", "ORCL", "COIN", "SQ", "ABNB", "UBER",
+    "PYPL", "V", "MA", "DIS",
 }
 
 
@@ -59,8 +64,32 @@ def _importance(ticker: str) -> Importance:
     return Importance.LOW
 
 
+def _detect_bmo_amc(ticker: str, earn_datetime=None) -> str:
+    """
+    BMO/AMC を判定。
+    戻り値: "寄前" or "引後" or ""
+    """
+    # 1. タイムスタンプから判定（yfinance が時刻情報を持っている場合）
+    if earn_datetime is not None and hasattr(earn_datetime, 'hour'):
+        hour = earn_datetime.hour
+        if 0 <= hour <= 9:  # 早朝〜9時台 → 寄前
+            return "寄前"
+        elif hour >= 16:  # 16時以降 → 引後
+            return "引後"
+        elif 10 <= hour <= 12:  # 午前中 → 寄前寄り
+            return "寄前"
+
+    # 2. 既知パターンからフォールバック
+    if ticker in KNOWN_BMO:
+        return "寄前"
+    if ticker in KNOWN_AMC:
+        return "引後"
+
+    return ""
+
+
 def fetch_earnings(start: date, end: date) -> list[Event]:
-    """主要米国企業の決算日を取得。"""
+    """主要米国企業の決算日を取得（BMO/AMC判定付き）。"""
     events = []
 
     try:
@@ -74,46 +103,45 @@ def fetch_earnings(start: date, end: date) -> list[Event]:
     for ticker in MAJOR_EARNINGS_TICKERS:
         try:
             tk = yf.Ticker(ticker)
-            # calendar property gives next earnings date
             cal = tk.calendar
             if cal is None or (hasattr(cal, 'empty') and cal.empty) or (isinstance(cal, dict) and not cal):
                 continue
 
             # yfinance returns dict or DataFrame depending on version
             earn_dates = []
+            raw_datetimes = []  # 時刻情報保持用
+
             if isinstance(cal, dict):
-                # New yfinance: dict with "Earnings Date" key
                 raw = cal.get("Earnings Date") or cal.get("earnings_date") or cal.get("Earnings Dates")
                 if raw is None:
-                    # Try first value that looks like a date list
                     for v in cal.values():
                         if isinstance(v, (list, tuple)) and len(v) > 0:
                             raw = v
                             break
                 if raw is not None:
                     if isinstance(raw, (list, tuple)):
-                        earn_dates = list(raw)
+                        raw_datetimes = list(raw)
                     else:
-                        earn_dates = [raw]
+                        raw_datetimes = [raw]
             elif hasattr(cal, "iloc"):
-                # Old yfinance: DataFrame format
                 if "Earnings Date" in cal.columns:
-                    earn_dates = cal["Earnings Date"].tolist()
+                    raw_datetimes = cal["Earnings Date"].tolist()
                 elif len(cal) > 0:
-                    earn_dates = [cal.iloc[0, 0]] if cal.shape[1] > 0 else []
-            
-            if not earn_dates:
+                    raw_datetimes = [cal.iloc[0, 0]] if cal.shape[1] > 0 else []
+
+            if not raw_datetimes:
                 continue
 
-            for ed in earn_dates:
+            for raw_dt in raw_datetimes:
                 try:
-                    if isinstance(ed, str):
-                        ed = datetime.fromisoformat(ed.replace("Z","")).date()
-                    elif hasattr(ed, 'date') and callable(ed.date):
-                        # datetime, pandas Timestamp, etc.
-                        ed = ed.date()
-                    elif isinstance(ed, date):
-                        pass
+                    earn_dt_raw = raw_dt  # 元のオブジェクト保持
+                    if isinstance(raw_dt, str):
+                        ed = datetime.fromisoformat(raw_dt.replace("Z", "")).date()
+                    elif hasattr(raw_dt, 'date') and callable(raw_dt.date):
+                        ed = raw_dt.date()
+                    elif isinstance(raw_dt, date):
+                        ed = raw_dt
+                        earn_dt_raw = None
                     else:
                         continue
                 except Exception:
@@ -122,23 +150,25 @@ def fetch_earnings(start: date, end: date) -> list[Event]:
                 if start <= ed <= end:
                     imp = _importance(ticker)
                     sector = SECTOR_MAP.get(ticker, "")
-                    # BMO (Before Market Open) / AMC (After Market Close)
-                    # yfinance doesn't reliably give this, default to BMO
-                    earn_time = time(7, 0)  # pre-market
 
-                    dt_utc = et_to_utc(ed, earn_time)
-                    summary = make_summary(imp, f"{ticker} 決算")
+                    # BMO/AMC判定
+                    bmo_amc = _detect_bmo_amc(ticker, earn_dt_raw)
+                    bmo_amc_tag = f" {bmo_amc}" if bmo_amc else ""
+
+                    # 寄前→終日表示だが早朝マーク、引後→引け後マーク
+                    summary = make_summary(imp, f"{ticker}{bmo_amc_tag}")
 
                     events.append(Event(
                         name_short=summary,
-                        name_full=f"{ticker} Earnings Release ({sector})",
-                        dt_utc=dt_utc,
+                        name_full=f"{ticker} Earnings Release ({sector}) [{bmo_amc or 'TBD'}]",
+                        dt_utc=et_to_utc(ed, time(7, 0)),
                         category="earnings",
                         importance=int(imp),
-                        all_day=True,  # 正確なBMO/AMC不明のため終日表示
+                        all_day=True,
                         details={
                             "ticker": ticker,
                             "sector": sector,
+                            "timing": bmo_amc or "未定",
                             "source": "yfinance",
                         },
                         uid_hint=f"EARN:{ticker}:{ed.isoformat()}",
@@ -153,10 +183,7 @@ def fetch_earnings(start: date, end: date) -> list[Event]:
 
 
 def fetch_earnings_from_fmp(start: date, end: date, api_key: str = "") -> list[Event]:
-    """
-    Financial Modeling Prep API（代替データソース）。
-    環境変数 FMP_API_KEY が必要。
-    """
+    """Financial Modeling Prep API（BMO/AMC情報付き）。"""
     import requests
 
     if not api_key:
@@ -189,19 +216,21 @@ def fetch_earnings_from_fmp(start: date, end: date, api_key: str = "") -> list[E
             imp = _importance(ticker)
             sector = SECTOR_MAP.get(ticker, "")
 
-            eps_est = item.get("epsEstimated")
-            rev_est = item.get("revenueEstimated")
+            # FMP provides "amc" / "bmo" / "dmh" (during market hours)
+            fmp_time = item.get("time", "")
+            if fmp_time == "bmo":
+                bmo_amc = "寄前"
+            elif fmp_time == "amc":
+                bmo_amc = "引後"
+            else:
+                bmo_amc = _detect_bmo_amc(ticker)  # フォールバック
 
-            suffix_parts = []
-            if eps_est:
-                suffix_parts.append(f"EPS予{eps_est}")
-
-            summary = make_summary(imp, f"{ticker} 決算",
-                                   " ".join(suffix_parts) if suffix_parts else "")
+            bmo_amc_tag = f" {bmo_amc}" if bmo_amc else ""
+            summary = make_summary(imp, f"{ticker}{bmo_amc_tag}")
 
             events.append(Event(
                 name_short=summary,
-                name_full=f"{ticker} Earnings Release ({sector})",
+                name_full=f"{ticker} Earnings Release ({sector}) [{bmo_amc or 'TBD'}]",
                 dt_utc=et_to_utc(ed, time(7, 0)),
                 category="earnings",
                 importance=int(imp),
@@ -209,8 +238,7 @@ def fetch_earnings_from_fmp(start: date, end: date, api_key: str = "") -> list[E
                 details={
                     "ticker": ticker,
                     "sector": sector,
-                    "eps_estimate": str(eps_est) if eps_est else "",
-                    "revenue_estimate": str(rev_est) if rev_est else "",
+                    "timing": bmo_amc or "未定",
                     "source": "FMP API",
                 },
                 uid_hint=f"EARN:{ticker}:{ed.isoformat()}",
