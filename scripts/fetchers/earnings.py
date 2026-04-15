@@ -76,27 +76,47 @@ def fetch_earnings(start: date, end: date) -> list[Event]:
             tk = yf.Ticker(ticker)
             # calendar property gives next earnings date
             cal = tk.calendar
-            if cal is None or cal.empty:
+            if cal is None or (hasattr(cal, 'empty') and cal.empty) or (isinstance(cal, dict) and not cal):
                 continue
 
-            # yfinance returns earnings date as index or column
-            if hasattr(cal, "iloc"):
-                # DataFrame format
+            # yfinance returns dict or DataFrame depending on version
+            earn_dates = []
+            if isinstance(cal, dict):
+                # New yfinance: dict with "Earnings Date" key
+                raw = cal.get("Earnings Date") or cal.get("earnings_date") or cal.get("Earnings Dates")
+                if raw is None:
+                    # Try first value that looks like a date list
+                    for v in cal.values():
+                        if isinstance(v, (list, tuple)) and len(v) > 0:
+                            raw = v
+                            break
+                if raw is not None:
+                    if isinstance(raw, (list, tuple)):
+                        earn_dates = list(raw)
+                    else:
+                        earn_dates = [raw]
+            elif hasattr(cal, "iloc"):
+                # Old yfinance: DataFrame format
                 if "Earnings Date" in cal.columns:
                     earn_dates = cal["Earnings Date"].tolist()
                 elif len(cal) > 0:
                     earn_dates = [cal.iloc[0, 0]] if cal.shape[1] > 0 else []
-                else:
-                    continue
-            else:
+            
+            if not earn_dates:
                 continue
 
             for ed in earn_dates:
-                if isinstance(ed, str):
-                    ed = datetime.fromisoformat(ed).date()
-                elif isinstance(ed, datetime):
-                    ed = ed.date()
-                elif not isinstance(ed, date):
+                try:
+                    if isinstance(ed, str):
+                        ed = datetime.fromisoformat(ed.replace("Z","")).date()
+                    elif hasattr(ed, 'date') and callable(ed.date):
+                        # datetime, pandas Timestamp, etc.
+                        ed = ed.date()
+                    elif isinstance(ed, date):
+                        pass
+                    else:
+                        continue
+                except Exception:
                     continue
 
                 if start <= ed <= end:
