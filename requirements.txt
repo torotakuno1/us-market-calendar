@@ -1,0 +1,5 @@
+icalendar>=5.0
+pytz>=2024.1
+requests>=2.31
+yfinance>=0.2.36
+python-dateutil>=2.9

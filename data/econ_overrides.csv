@@ -1,0 +1,10 @@
+# Economic Data Release Override
+# 公式スケジュールと異なる場合、ここで上書き
+# Format: KEY,YYYY-MM-DD,HH:MM(ET),Note
+#
+# KEY一覧: NFP,CPI,CORE_PCE,PPI,RETAIL,ISM_MFG,ISM_SVC,IP,
+#          HOUSING_S,EXIST_HOME,CONS_CONF,DURABLE,MICHIGAN_F,
+#          MICHIGAN_P,JOLTS,ADP,GDP_ADV,GDP_2ND,GDP_3RD
+#
+# 例) CPI,2026-05-13,08:30,May CPI moved due to holiday
+# 例) IP,2026-04-16,09:15,April G.17 release (confirmed by Fed)

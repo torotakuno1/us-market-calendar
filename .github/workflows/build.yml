@@ -1,0 +1,62 @@
+name: build-ics
+
+on:
+  schedule:
+    - cron: "0 18 * * *"   # 03:00 JST (毎日)
+    - cron: "0 6 * * *"    # 15:00 JST (米市場開場前の更新)
+  workflow_dispatch:
+    inputs:
+      months:
+        description: 'Months to generate'
+        default: '3'
+      no_earnings:
+        description: 'Skip earnings fetch'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Ensure output dir
+        run: mkdir -p docs
+
+      - name: Generate ICS
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          ARGS="--months ${{ github.event.inputs.months || '3' }}"
+          if [ "${{ github.event.inputs.no_earnings }}" = "true" ]; then
+            ARGS="$ARGS --no-earnings"
+          fi
+          python scripts/run_all.py $ARGS
+
+      - name: List output
+        run: ls -la docs/
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/*.ics
+          git diff --cached --quiet && echo "No changes" || (git commit -m "update ics $(date -u +%Y-%m-%dT%H:%M)" && git push)
