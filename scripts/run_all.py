@@ -75,14 +75,8 @@ def main():
     # ── 5. Earnings ──
     if not args.no_earnings:
         print("[5/5] Major US Earnings...")
-        # FMP API優先、なければ yfinance
-        fmp_key = os.environ.get("FMP_API_KEY", "")
-        if fmp_key:
-            from fetchers.earnings import fetch_earnings_from_fmp
-            earn = fetch_earnings_from_fmp(start, end, fmp_key)
-        else:
-            from fetchers.earnings import fetch_earnings
-            earn = fetch_earnings(start, end)
+        from fetchers.earnings import fetch_earnings
+        earn = fetch_earnings(start, end)
         all_events.extend(earn)
         print(f"  → {len(earn)} events")
     else:

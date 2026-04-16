@@ -220,3 +220,33 @@ def make_summary(imp: Importance, short_name: str, suffix: str = "") -> str:
     if len(s) > 28:
         s = s[:27] + "…"
     return s
+
+
+# ── FRED Release ID マッピング ─────────────────────────
+# config key → FRED release_id
+# https://fred.stlouisfed.org/releases で確認
+FRED_RELEASE_IDS: dict[str, int] = {
+    "NFP":        50,   # Employment Situation
+    "CPI":        10,   # Consumer Price Index
+    "PPI":        46,   # Producer Price Index
+    "GDP_ADV":    53,   # Gross Domestic Product
+    "GDP_2ND":    53,
+    "GDP_3RD":    53,
+    "RETAIL":     9,    # Advance Retail Sales
+    "PCE_INCOME": 54,   # Personal Income and Outlays (includes Core PCE)
+    "DURABLE":    58,   # Advance Report on Durable Goods
+    "HOUSING_S":  14,   # New Residential Construction (Housing Starts)
+    "EXIST_HOME": 99,   # Existing Home Sales
+    "NEW_HOME":   55,   # New Residential Sales
+    "TRADE_BAL":  51,   # U.S. International Trade in Goods and Services
+    "JOLTS":      110,  # Job Openings and Labor Turnover Survey
+    "IMPORT_PX":  97,   # U.S. Import/Export Price Indexes
+    "CONS_CONF":  108,  # Consumer Confidence (Note: Conference Board, not in FRED but try)
+    "ISM_MFG":    29,   # ISM Manufacturing PMI (ISM Report on Business)
+    "ISM_SVC":    29,   # ISM Non-Manufacturing
+    "MICHIGAN_P": 262,  # Surveys of Consumers (Univ of Michigan)
+    "MICHIGAN_F": 262,
+    "ADP":        474,  # ADP National Employment Report (if available)
+    "EMPIRE":     199,  # Empire State Manufacturing Survey
+    "CASE_SHILL": 199,  # S&P/Case-Shiller (partial)
+}
