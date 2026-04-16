@@ -4,5 +4,19 @@
     "executed_at_jst": "2026-04-16T18:24:54+09:00",
     "symbol_count": 0,
     "symbols": []
+  },
+  {
+    "target_date": "2026-04-16",
+    "executed_at_jst": "2026-04-16T18:37:33+09:00",
+    "symbol_count": 1,
+    "symbols": [
+      {
+        "symbol": "NFLX",
+        "tier": 2,
+        "hour": "amc",
+        "has_error": false,
+        "implied_move_pct": 7.15
+      }
+    ]
   }
 ]
