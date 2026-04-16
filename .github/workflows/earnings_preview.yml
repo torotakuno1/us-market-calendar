@@ -1,0 +1,60 @@
+name: Earnings Preview Notification
+
+on:
+  schedule:
+    # 21:00 JST = 12:00 UTC
+    # 遅延対策で 11:52 UTC 開始 (GitHub Actions の cron は最大10-15分遅延あり)
+    - cron: '52 11 * * *'
+  workflow_dispatch:  # 手動実行用
+
+# このワークフローは docs/earnings_preview_log.json のみ更新するため、
+# 他ワークフロー (build.yml) の docs/ コミットと競合する可能性がある。
+# push 前に rebase pull で対処する。
+concurrency:
+  group: earnings-preview
+  cancel-in-progress: false
+
+jobs:
+  send-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ログコミット用
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # rebase のため履歴全取得
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests yfinance
+
+      - name: Run earnings preview
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN_EARNINGS }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID_EARNINGS }}
+        run: |
+          python scripts/earnings_preview/main.py
+
+      - name: Commit log
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/earnings_preview_log.json || true
+          # 差分がある場合のみcommit
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update earnings preview log"
+            # build.yml 等との競合回避: pull --rebase で先行コミット取込
+            git pull --rebase origin main || true
+            git push origin main || true
+          else
+            echo "No changes in earnings_preview_log.json"
+          fi
