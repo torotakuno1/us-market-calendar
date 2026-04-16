@@ -160,6 +160,77 @@ def write_log(target_date: str, previews: list):
         logging.error(f"Log save failed: {ex}")
 
 
+def run_test_ping(finnhub_key: str, tg_token: str, tg_chat_id: str):
+    """疎通テスト: Finnhub API + Telegram 配信の両方を確認する短文を送信
+
+    目的:
+      - Bot Token の正当性確認
+      - Chat ID の正当性確認
+      - Finnhub API Key の有効性確認
+      - watchlist CSV の読込確認
+    トリガー: workflow_dispatch で input `test_ping=true` を指定した時のみ
+    """
+    logging.info("=== TEST PING MODE ===")
+
+    # watchlist 読込確認
+    try:
+        watchlist = load_watchlist(WATCHLIST_PATH)
+        watchlist_size = len(watchlist)
+        watchlist_status = f"✅ {watchlist_size}銘柄"
+    except Exception as ex:
+        watchlist_size = 0
+        watchlist_status = f"❌ 読込失敗: {str(ex)[:80]}"
+        logging.error(f"Watchlist load failed in test_ping: {ex}")
+
+    # Finnhub 疎通確認 (軽量な /quote コール1回)
+    finnhub_status = "❌ 未確認"
+    try:
+        client = FinnhubClient(finnhub_key)
+        quote = client.quote("AAPL")
+        aapl_price = quote.get("c")
+        if aapl_price and aapl_price > 0:
+            finnhub_status = f"✅ OK (AAPL ${aapl_price:.2f})"
+        else:
+            finnhub_status = f"⚠️ 応答異常 (c={aapl_price})"
+    except Exception as ex:
+        finnhub_status = f"❌ FAIL: {str(ex)[:80]}"
+        logging.error(f"Finnhub test failed: {ex}")
+
+    # 実行環境情報
+    now_jst = datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S JST")
+    now_et = datetime.now(ET).strftime("%Y-%m-%d %H:%M:%S ET")
+    tomorrow_et = (datetime.now(ET) + timedelta(days=1)).strftime("%Y-%m-%d")
+    # Chat ID 末尾4桁のみ表示 (全桁は漏洩防止)
+    chat_id_suffix = str(tg_chat_id)[-4:] if tg_chat_id else "????"
+
+    msg_lines = [
+        "🔔 <b>疎通テスト</b>",
+        "",
+        f"<b>実行時刻</b>",
+        f"  JST: {now_jst}",
+        f"  ET:  {now_et}",
+        "",
+        f"<b>次回ターゲット日 (ET+1)</b>: {tomorrow_et}",
+        "",
+        f"<b>watchlist</b>: {watchlist_status}",
+        f"<b>Finnhub API</b>: {finnhub_status}",
+        f"<b>Telegram 配信</b>: ✅ 本メッセージ到達=OK",
+        f"<b>Chat ID 末尾</b>: ...{chat_id_suffix}",
+        "",
+        "━━━━━━━━━━",
+        "本番配信: 21:00 JST 毎日",
+        "(翌日決算対象あり時のみ送信)",
+    ]
+    message = "\n".join(msg_lines)
+
+    try:
+        send_telegram([message], tg_token, tg_chat_id)
+        logging.info("Test ping sent successfully")
+    except Exception as ex:
+        logging.error(f"Test ping send failed: {ex}")
+        raise
+
+
 def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -170,6 +241,7 @@ def main():
     finnhub_key = os.environ.get("FINNHUB_API_KEY")
     tg_token = os.environ.get("TELEGRAM_BOT_TOKEN")
     tg_chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    test_ping_mode = os.environ.get("TEST_PING", "0") == "1"
 
     missing = [
         name for name, val in [
@@ -182,70 +254,121 @@ def main():
         logging.error(f"Missing env vars: {missing}")
         sys.exit(1)
 
+    # 1.5 疎通テストモード (workflow_dispatch input 指定時のみ)
+    if test_ping_mode:
+        try:
+            run_test_ping(finnhub_key, tg_token, tg_chat_id)
+            return
+        except Exception as ex:
+            logging.error(f"Test ping fatal: {ex}")
+            sys.exit(1)
+
     try:
         # 2. watchlist 読込
         watchlist = load_watchlist(WATCHLIST_PATH)
 
-        # 3. 翌日(ET基準)の日付算出
+        # 3. ターゲット期間算出: 「これから24時間以内に発表される決算」
         #    21:00 JST ≈ 07:00-08:00 ET (冬時間/夏時間)
-        #    米市場寄り前に「翌日」のBMO/AMC両方を通知
+        #    = 当日ET 米市場寄り前時点
+        #    通知対象:
+        #      (a) 当日ET AMC   : 今夜 引け後発表 (例: NFLX, 発表まで約8h)
+        #      (b) 翌日ET BMO   : 明朝 寄り前発表 (発表まで約20-23h)
+        #      (c) 翌日ET 時刻未定: 翌日のどこかで発表 (安全側で含める)
+        #    除外:
+        #      - 当日ET BMO    : 既発表済 (21:00 JST = 08:00 ET で BMO の多くは発表済)
+        #      - 翌日ET AMC    : 次回実行 (翌日 21:00 JST) で「今夜 AMC」として拾う
         now_et = datetime.now(ET)
-        target_date = (now_et + timedelta(days=1)).date()
-        target_str = target_date.strftime("%Y-%m-%d")
-        logging.info(f"Target date (ET+1): {target_str} / Now JST: {datetime.now(JST).isoformat(timespec='seconds')}")
+        today_et = now_et.date()
+        tomorrow_et = today_et + timedelta(days=1)
+        today_str = today_et.strftime("%Y-%m-%d")
+        tomorrow_str = tomorrow_et.strftime("%Y-%m-%d")
+        logging.info(
+            f"Window: today_ET={today_str} AMC + tomorrow_ET={tomorrow_str} BMO/TBD "
+            f"| Now JST: {datetime.now(JST).isoformat(timespec='seconds')}"
+        )
 
-        # 4. Finnhub 決算カレンダー取得
+        # 4. Finnhub 決算カレンダー取得 (2日分)
         client = FinnhubClient(finnhub_key)
         all_earnings = client.earnings_calendar(
-            from_date=target_str,
-            to_date=target_str,
+            from_date=today_str,
+            to_date=tomorrow_str,
         )
-        logging.info(f"Finnhub returned {len(all_earnings)} total earnings entries for {target_str}")
+        logging.info(f"Finnhub returned {len(all_earnings)} total earnings entries for {today_str}..{tomorrow_str}")
 
-        # 5. watchlist フィルタ
+        # 5. watchlist フィルタ + セッション分類
+        #    _session 値:
+        #      "today_late"     : 今夜AMC  (今日ET引け後発表)
+        #      "tomorrow_early" : 明朝BMO  (翌日ET寄り前発表)
+        #      "tomorrow_tbd"   : 翌日時刻未定
         watchlist_tickers = set(watchlist.keys())
-        tomorrow_earnings = [
-            e for e in all_earnings
-            if (e.get("symbol") or "").upper() in watchlist_tickers
-        ]
-        logging.info(f"Filtered to {len(tomorrow_earnings)} watchlist tickers")
+        upcoming = []
+        for e in all_earnings:
+            symbol = (e.get("symbol") or "").upper()
+            if symbol not in watchlist_tickers:
+                continue
+            ed = e.get("date")
+            eh = (e.get("hour") or "").lower()
 
-        if not tomorrow_earnings:
-            logging.info(f"No watchlist earnings on {target_str}. Silent exit.")
-            write_log(target_str, [])
+            if ed == today_str and eh in ("amc", "dmh"):
+                e["_session"] = "today_late"
+                upcoming.append(e)
+            elif ed == tomorrow_str and eh == "bmo":
+                e["_session"] = "tomorrow_early"
+                upcoming.append(e)
+            elif ed == tomorrow_str and eh in ("", "dmh"):
+                e["_session"] = "tomorrow_tbd"
+                upcoming.append(e)
+            # 当日ET BMO: 既発表 → スキップ
+            # 翌日ET AMC: 次回実行で拾う → スキップ
+
+        logging.info(f"Filtered to {len(upcoming)} upcoming watchlist earnings")
+        if upcoming:
+            session_counts = {}
+            for e in upcoming:
+                s = e.get("_session", "?")
+                session_counts[s] = session_counts.get(s, 0) + 1
+            logging.info(f"Session breakdown: {session_counts}")
+
+        if not upcoming:
+            logging.info(f"No watchlist earnings in 24h window. Silent exit.")
+            write_log(today_str, [])
             return
 
-        # 6. ソート: tier降順 → BMO/AMC → symbol
-        hour_order = {"bmo": 0, "amc": 1, "dmh": 2, "": 3}
-        tomorrow_earnings.sort(key=lambda e: (
+        # 6. ソート: session順 → tier降順 → symbol
+        session_order = {"today_late": 0, "tomorrow_early": 1, "tomorrow_tbd": 2}
+        upcoming.sort(key=lambda e: (
+            session_order.get(e.get("_session", "tomorrow_tbd"), 9),
             -watchlist[(e.get("symbol") or "").upper()]["tier"],
-            hour_order.get(e.get("hour", ""), 3),
             (e.get("symbol") or "").upper(),
         ))
 
         # 7. 各銘柄の詳細データ収集 (順次 + スリープ)
         previews = []
-        for entry in tomorrow_earnings:
+        for entry in upcoming:
             symbol = (entry.get("symbol") or "").upper()
             if not symbol:
                 continue
             tier_info = watchlist[symbol]
             try:
                 detail = build_preview(client, symbol, entry, tier_info)
+                detail["session"] = entry.get("_session", "tomorrow_tbd")
+                detail["date"] = entry.get("date")
                 previews.append(detail)
-                logging.info(f"Built preview for {symbol} (tier={tier_info['tier']})")
+                logging.info(f"Built preview for {symbol} (tier={tier_info['tier']}, session={detail['session']})")
             except Exception as ex:
                 logging.error(f"Failed to build {symbol}: {ex}")
                 previews.append({
                     "symbol": symbol,
                     "tier": tier_info["tier"],
                     "hour": entry.get("hour", ""),
+                    "session": entry.get("_session", "tomorrow_tbd"),
+                    "date": entry.get("date"),
                     "error": str(ex),
                 })
             sleep(PER_SYMBOL_SLEEP_SEC)
 
-        # 8. メッセージ整形
-        messages = build_telegram_message(previews, target_str)
+        # 8. メッセージ整形 (今日ET と 翌日ET の両日付を渡す)
+        messages = build_telegram_message(previews, today_str, tomorrow_str)
         if not messages:
             logging.info("No messages to send")
             return
@@ -253,8 +376,8 @@ def main():
         # 9. Telegram 送信
         send_telegram(messages, tg_token, tg_chat_id)
 
-        # 10. ログ保存
-        write_log(target_str, previews)
+        # 10. ログ保存 (当日ET日付をキーにする)
+        write_log(today_str, previews)
 
         logging.info(f"Done: sent {len(messages)} message(s), {len(previews)} symbol(s)")
 

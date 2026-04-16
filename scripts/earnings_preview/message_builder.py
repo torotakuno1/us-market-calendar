@@ -3,67 +3,76 @@
 Telegram Bot API 送信制限:
   - 1メッセージ 4096文字まで (HTMLタグ含む)
   - 本実装では 3800文字で分割 (マージン含む)
+
+グルーピング: session 値で分類
+  - today_late     : 🌆 今夜AMC (当日ET引け後発表予定)
+  - tomorrow_early : 🌅 明朝BMO (翌日ET寄り前発表予定)
+  - tomorrow_tbd   : ⏰ 明日時刻未定
 """
 import html
+from datetime import datetime
 
 TIER_STARS = {3: "★★★", 2: "★★", 1: "★"}
 
-HOUR_LABELS = {
-    "bmo": "🌅 BMO 寄り前",
-    "amc": "🌆 AMC 引け後",
-    "dmh": "⏰ 場中",
-    "other": "⏰ 時間未定",
-}
 
-SECTOR_LABELS = {
-    "tech": "テック",
-    "semi": "半導体",
-    "auto_ev": "EV/自動車",
-    "financials": "金融",
-    "software": "SaaS",
-    "ai_infra": "AIインフラ",
-    "ai_power": "AI電力",
-    "healthcare": "ヘルスケア",
-    "consumer": "消費",
-    "energy": "エネルギー",
-    "media": "メディア",
-    "industrials": "産業",
-}
+def _fmt_mmdd(date_str: str) -> str:
+    """YYYY-MM-DD → M/D"""
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        return f"{dt.month}/{dt.day}"
+    except (ValueError, TypeError):
+        return date_str or "?"
 
 
-def build_telegram_message(previews, target_date):
+def _session_label(session: str, today_str: str, tomorrow_str: str) -> str:
+    """セッション別のヘッダラベル生成"""
+    today_mmdd = _fmt_mmdd(today_str)
+    tomorrow_mmdd = _fmt_mmdd(tomorrow_str)
+    if session == "today_late":
+        return f"🌆 今夜 AMC ({today_mmdd} 引け後発表)"
+    elif session == "tomorrow_early":
+        return f"🌅 明朝 BMO ({tomorrow_mmdd} 寄り前発表)"
+    elif session == "tomorrow_tbd":
+        return f"⏰ 明日 時刻未定 ({tomorrow_mmdd})"
+    else:
+        return "⏰ その他"
+
+
+def build_telegram_message(previews, today_str: str, tomorrow_str: str):
     """
     複数銘柄の preview を Telegram HTML形式に整形
     4096文字制限対応で返り値は list[str]
 
     Args:
-        previews: list of dict (main.build_preview の戻り値)
-        target_date: str 'YYYY-MM-DD'
+        previews: list of dict (main.build_preview の戻り値、session 必須)
+        today_str: YYYY-MM-DD (当日ET)
+        tomorrow_str: YYYY-MM-DD (翌日ET)
     Returns:
         list[str]: 1要素=1メッセージ
     """
     if not previews:
         return []
 
+    today_mmdd = _fmt_mmdd(today_str)
+    tomorrow_mmdd = _fmt_mmdd(tomorrow_str)
+
     lines = []
-    lines.append(f"📊 <b>決算プレビュー {target_date}</b>")
+    lines.append(f"📊 <b>決算プレビュー {today_mmdd}夜〜{tomorrow_mmdd}朝</b>")
     lines.append(f"対象: {len(previews)}銘柄")
     lines.append("")
 
-    # BMO/AMC/その他 でグループ化
-    groups = {"bmo": [], "amc": [], "other": []}
+    # セッションでグループ化 (順序固定)
+    groups = {"today_late": [], "tomorrow_early": [], "tomorrow_tbd": []}
     for p in previews:
-        hour = p.get("hour", "")
-        if hour == "bmo":
-            groups["bmo"].append(p)
-        elif hour == "amc":
-            groups["amc"].append(p)
+        s = p.get("session", "tomorrow_tbd")
+        if s in groups:
+            groups[s].append(p)
         else:
-            groups["other"].append(p)
+            groups["tomorrow_tbd"].append(p)
 
-    for key in ["bmo", "amc", "other"]:
+    for key in ["today_late", "tomorrow_early", "tomorrow_tbd"]:
         if groups[key]:
-            label = HOUR_LABELS.get(key, "⏰ その他")
+            label = _session_label(key, today_str, tomorrow_str)
             lines.append(f"━━━━ {label} ━━━━")
             for p in groups[key]:
                 lines.extend(format_ticker_block(p))
@@ -88,7 +97,7 @@ def format_ticker_block(p: dict):
         lines.append(f"  エラー: {err_msg}")
         return lines
 
-    # 企業名 (HTMLエスケープ必須: &, <, > が含まれる可能性)
+    # 企業名 (HTMLエスケープ必須)
     company = html.escape(p.get("company_name", symbol))
     lines.append(f"{stars} <b>{html.escape(symbol)}</b> {company}")
 
@@ -106,7 +115,6 @@ def format_ticker_block(p: dict):
     if eps_est is not None:
         lines.append(f"🎯 EPS予想: ${eps_est:.2f}")
     if rev_est:
-        # Finnhub の revenueEstimate は USD (float) で返る
         rev_b = rev_est / 1e9
         if rev_b >= 1:
             lines.append(f"   売上予想: ${rev_b:.2f}B")
@@ -153,9 +161,7 @@ def format_ticker_block(p: dict):
 
 
 def split_message(text: str, max_len: int = 3800):
-    """長文を行境界で分割。
-    1行が max_len を超える場合はそのまま残す (現実的にはありえない想定)。
-    """
+    """長文を行境界で分割"""
     if len(text) <= max_len:
         return [text]
 
@@ -164,7 +170,7 @@ def split_message(text: str, max_len: int = 3800):
     current_len = 0
 
     for line in text.split("\n"):
-        line_len = len(line) + 1  # +1 for newline
+        line_len = len(line) + 1
         if current_len + line_len > max_len and current:
             parts.append("\n".join(current))
             current = []
