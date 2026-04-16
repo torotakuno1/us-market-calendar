@@ -35,7 +35,7 @@ SECTOR_MAP = {
     "DIS": "Media", "NFLX": "Media", "CMCSA": "Media", "T": "Tel", "VZ": "Tel",
     "V": "Fin", "MA": "Fin", "PYPL": "Fin", "CRM": "Tech",
     "ORCL": "Tech", "ADBE": "Tech", "NOW": "Tech",
-    "COIN": "Fin", "SQ": "Fin", "ABNB": "Cons", "UBER": "Cons",
+    "COIN": "Fin", "XYZ": "Fin", "ABNB": "Cons", "UBER": "Cons",
 }
 
 TOP_TIER = {"AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", "JPM"}
@@ -55,7 +55,7 @@ KNOWN_BMO = {
 KNOWN_AMC = {
     "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA",
     "NVDA", "AMD", "INTC", "QCOM", "NFLX", "CRM",
-    "ADBE", "NOW", "ORCL", "COIN", "SQ", "ABNB", "UBER",
+    "ADBE", "NOW", "ORCL", "COIN", "XYZ", "ABNB", "UBER",
     "PYPL", "V", "MA", "DIS",
 }
 

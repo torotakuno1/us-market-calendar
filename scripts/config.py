@@ -21,11 +21,11 @@ class Importance(IntEnum):
 
 # ── イベントカテゴリ → 個別ICSファイル ──────────────────
 CALENDARS = {
-    "data":     {"file": "us_data.ics",     "name": "🇺🇸 経済指標",   "color": "#E53935"},
-    "fed":      {"file": "us_fed.ics",      "name": "🇺🇸 Fed",        "color": "#1E88E5"},
-    "auction":  {"file": "us_auction.ics",  "name": "🇺🇸 国債入札",   "color": "#43A047"},
-    "opex":     {"file": "us_opex.ics",     "name": "🇺🇸 OpEx/VIX",   "color": "#FB8C00"},
-    "earnings": {"file": "us_earnings.ics", "name": "🇺🇸 主要決算",   "color": "#8E24AA"},
+    "data":     {"file": "us_data.ics",     "name": "🇺🇸 経済指標",   "color": "#AF52DE"},  # 紫
+    "fed":      {"file": "us_fed.ics",      "name": "🇺🇸 Fed",        "color": "#FF3B30"},  # 赤
+    "auction":  {"file": "us_auction.ics",  "name": "🇺🇸 国債入札",   "color": "#34C759"},  # 緑
+    "opex":     {"file": "us_opex.ics",     "name": "🇺🇸 OpEx/VIX",   "color": "#FF9500"},  # オレンジ
+    "earnings": {"file": "us_earnings.ics", "name": "🇺🇸 主要決算",   "color": "#007AFF"},  # 青
 }
 
 
@@ -119,7 +119,7 @@ MAJOR_EARNINGS_TICKERS: list[str] = [
     "DIS", "NFLX", "CMCSA", "T", "VZ",
     # その他注目
     "V", "MA", "PYPL", "CRM", "ORCL", "ADBE", "NOW",
-    "COIN", "SQ", "ABNB", "UBER",
+    "COIN", "XYZ", "ABNB", "UBER",
 ]
 
 
