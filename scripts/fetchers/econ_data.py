@@ -108,7 +108,9 @@ def _fetch_bls_ical(start: date, end: date) -> dict[str, list[date]]:
 
     try:
         resp = requests.get(BLS_ICAL_URL, timeout=15, headers={
-            "User-Agent": "US-Market-Calendar/1.0"
+            "User-Agent": "Mozilla/5.0 (compatible; US-Market-Calendar/1.0; +https://github.com/torotakuno1/us-market-calendar)",
+            "Accept": "text/calendar, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9",
         })
         resp.raise_for_status()
 
