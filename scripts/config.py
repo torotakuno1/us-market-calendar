@@ -193,17 +193,40 @@ G17_DATES_2026: list[str] = [
 ]
 
 
-# ── Fed発言 フィルタ ─────────────────────────────────
-# スクレイピングで取得した発言のうち、以下の人物のみカレンダーに含める
-FED_KEY_SPEAKERS: list[str] = [
-    "Powell",        # 議長
-    "Jefferson",     # 副議長
-    "Barr",          # 金融監督担当副議長
-    "Bowman",        # 理事
-    "Cook",          # 理事
-    "Kugler",        # 理事
-    "Waller",        # 理事
+# ── Fed発言 フィルタ (v5で構造化) ─────────────────────
+# SCRAPE_TARGET_SPEAKERS: スクレイピング対象 = 議長候補のみ
+#   - key: 姓（URLパラメータや発言スクレイピングで部分一致に使用）
+#   - value: 重要度 (3=★★★)
+#
+# CHAIR_CANDIDATES: 議長候補リスト
+#   - 2026-05-15 までは Powell
+#   - 2026-05-15 以降は Warsh (上院承認待ち、遅延時は Jefferson 代行)
+#   - Warsh/Jefferson を入れることで承認遅延時もイベント取得を継続
+#
+# FED_KEY_SPEAKERS: 全理事会メンバー（参考用・将来拡張可能性）
+#   現在は SCRAPE_TARGET_SPEAKERS のみが fed_speeches.py で使用される
+
+CHAIR_CANDIDATES: list[str] = [
+    "Powell",    # 2018-02-05 ~ 2026-05-15 (任期満了)
+    "Warsh",     # 2026-05-15 以降 (Trump 指名、上院承認待ち)
 ]
+
+SCRAPE_TARGET_SPEAKERS: dict[str, int] = {
+    "Powell": 3,
+    "Warsh":  3,
+}
+
+# 全理事会メンバー（2026-04 時点・参考・将来 v5.2 以降で拡張可能）
+FED_KEY_SPEAKERS: dict[str, dict] = {
+    "Powell":    {"role": "Chair",                    "importance": 3, "term_end": "2026-05-15"},
+    "Warsh":     {"role": "Chair (nominated)",        "importance": 3, "term_start": "2026-05-15"},
+    "Jefferson": {"role": "Vice Chair",               "importance": 2, "term_end": "2027-09-07"},
+    "Bowman":    {"role": "Vice Chair for Supervision", "importance": 2, "term_start": "2025-06-09"},
+    "Barr":      {"role": "Governor",                 "importance": 2, "term_end": "2032-01-31"},
+    "Cook":      {"role": "Governor",                 "importance": 2, "term_end": "2038-01-31"},
+    "Miran":     {"role": "Governor",                 "importance": 2, "term_end": "2026-01-31 (holdover)"},
+    "Waller":    {"role": "Governor",                 "importance": 2, "term_end": "2030-01-31"},
+}
 
 
 # ── iPhone表示ヘルパー ─────────────────────────────────

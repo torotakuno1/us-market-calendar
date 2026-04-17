@@ -3,18 +3,15 @@ Fed Events Fetcher
 ===================
 - FOMC 金利決定 / 記者会見 / 議事録（静的）
 - ベージュブック（静的）
-- 鉱工業生産 G.17（静的スケジュール）
-- Fed理事発言（FederalReserve.gov スクレイピング）
+- 鉱工業生産 G.17（v10.2 で削除済み、PFEI側で一元管理）
+- Fed議長発言（v5: fed_speeches.py に分離、Playwright + HTMLアーカイブ）
 """
 
-from datetime import date, time, datetime
-
-import requests
-from bs4 import BeautifulSoup
+from datetime import date, time
 
 from config import (
-    FOMC_DATES, BEIGE_BOOK_DATES, G17_DATES_2026,
-    FED_KEY_SPEAKERS, Importance, make_summary,
+    FOMC_DATES, BEIGE_BOOK_DATES,
+    Importance, make_summary,
 )
 from utils import Event, et_to_utc
 
@@ -41,13 +38,17 @@ def fetch_fed_events(start: date, end: date) -> list[Event]:
             ))
 
             dt_press = et_to_utc(decision_date, time(14, 30))
+            # v5: 議長名を動的に（Powell or Warsh 後任）
+            # 2026-05-15 以降は Warsh 想定
+            press_chair = "Warsh" if decision_date >= date(2026, 5, 15) else "Powell"
+            chair_jp = "ウォーシュ" if press_chair == "Warsh" else "パウエル"
             events.append(Event(
-                name_short=make_summary(Importance.HIGH, "パウエル記者会見"),
-                name_full="FOMC Press Conference (Chair Powell)",
+                name_short=make_summary(Importance.HIGH, f"{chair_jp}記者会見"),
+                name_full=f"FOMC Press Conference (Chair {press_chair})",
                 dt_utc=dt_press,
                 category="fed",
                 importance=3,
-                details={"source": "federalreserve.gov"},
+                details={"source": "federalreserve.gov", "chair": press_chair},
                 uid_hint=f"FOMC_PRESS:{decision_date.isoformat()}",
             ))
 
@@ -83,121 +84,14 @@ def fetch_fed_events(start: date, end: date) -> list[Event]:
             ))
 
     # ── 鉱工業生産 G.17 ──
-    # v10.2: PFEI PDFに移管済. fed.py側では生成しない.
-    # econ_data.py が INDICATORS["IP"] について PFEI から日付取得する.
-    # for d_str in G17_DATES_2026:
-    #     d = date.fromisoformat(d_str)
-    #     if start <= d <= end:
-    #         dt_utc = et_to_utc(d, time(9, 15))
-    #         events.append(Event(
-    #             name_short=make_summary(Importance.MEDIUM, "鉱工業生産 G17"),
-    #             name_full="Industrial Production and Capacity Utilization (G.17)",
-    #             dt_utc=dt_utc,
-    #             category="data",
-    #             importance=2,
-    #             details={"source": "federalreserve.gov"},
-    #             uid_hint=f"G17:{d.isoformat()}",
-    #         ))
+    # v10.2 で削除済み（PFEI 側で econ_data.py から取得）
 
-    # ── Fed理事発言（スクレイピング）──
-    speeches = _fetch_fed_speeches(start, end)
-    events.extend(speeches)
-
-    return events
-
-
-def _fetch_fed_speeches(start: date, end: date) -> list[Event]:
-    """FederalReserve.gov カレンダーから主要理事の発言予定を取得。"""
-    events = []
-
+    # ── Fed議長発言（v5: Playwright + 静的アーカイブ） ──
     try:
-        url = "https://www.federalreserve.gov/newsevents/calendar.htm"
-        resp = requests.get(url, timeout=30, headers={
-            "User-Agent": "US-Market-Calendar/1.0"
-        })
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
+        from fetchers.fed_speeches import fetch_fed_chair_speeches
+        speeches = fetch_fed_chair_speeches(start, end)
+        events.extend(speeches)
+    except Exception as ex:
+        print(f"  [fed] chair speeches module failed: {ex}")
 
-        # Fed calendar uses panels with dates and event descriptions
-        panels = soup.select(".panel-default")
-        for panel in panels:
-            heading = panel.select_one(".panel-heading")
-            body = panel.select_one(".panel-body")
-            if not heading or not body:
-                continue
-
-            # Extract date from heading
-            date_text = heading.get_text(strip=True)
-            event_date = _parse_fed_date(date_text)
-            if event_date is None:
-                continue
-            if not (start <= event_date <= end):
-                continue
-
-            # Look for speeches/testimonies
-            items = body.select("li, p, div")
-            for item in items:
-                text = item.get_text(" ", strip=True)
-                if not any(w in text.lower() for w in
-                           ["speech", "testimony", "speaks", "remarks",
-                            "participates", "discussion", "press conference"]):
-                    continue
-
-                # Key speaker filter
-                speaker = None
-                for name in FED_KEY_SPEAKERS:
-                    if name.lower() in text.lower():
-                        speaker = name
-                        break
-                if not speaker:
-                    continue
-
-                imp = Importance.HIGH if speaker == "Powell" else Importance.MEDIUM
-                short_name = f"Fed {speaker}発言"
-                dt_utc = et_to_utc(event_date, time(12, 0))
-
-                events.append(Event(
-                    name_short=make_summary(imp, short_name),
-                    name_full=f"Fed Speech: {speaker}",
-                    dt_utc=dt_utc,
-                    category="fed",
-                    importance=int(imp),
-                    details={
-                        "speaker": speaker,
-                        "description": text[:200],
-                        "source": "federalreserve.gov",
-                    },
-                    uid_hint=f"FED_SPEECH:{speaker}:{event_date.isoformat()}",
-                ))
-
-    except Exception as e:
-        print(f"  [fed_speeches] scraping error: {e}")
-
-    print(f"  [fed_speeches] {len(events)} speeches found")
     return events
-
-
-def _parse_fed_date(text: str):
-    """Fed calendar heading からdateを抽出。'April 15, 2026' 形式等。"""
-    import re
-    # "April 15-16, 2026" or "April 15, 2026"
-    months = {
-        "january": 1, "february": 2, "march": 3, "april": 4,
-        "may": 5, "june": 6, "july": 7, "august": 8,
-        "september": 9, "october": 10, "november": 11, "december": 12,
-    }
-    text_lower = text.lower().strip()
-    for mname, mnum in months.items():
-        if mname in text_lower:
-            nums = re.findall(r'\d+', text)
-            if len(nums) >= 2:
-                day = int(nums[0])
-                year = int(nums[-1])
-                if year < 100:
-                    year += 2000
-                if 2024 <= year <= 2030 and 1 <= day <= 31:
-                    try:
-                        return date(year, mnum, day)
-                    except ValueError:
-                        pass
-    return None

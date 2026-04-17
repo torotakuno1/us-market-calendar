@@ -24,7 +24,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25   # v5: Playwright Chromium ダウンロード分の余裕
 
     steps:
       - uses: actions/checkout@v4
@@ -39,8 +39,19 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
 
+      # v5: Playwright ブラウザキャッシュ
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium-v1
+
       - name: Install deps
         run: pip install -r requirements.txt
+
+      # v5: Chromium インストール（キャッシュヒット時はスキップ動作）
+      - name: Install Playwright Chromium
+        run: python -m playwright install --with-deps chromium
 
       - name: Ensure output dir
         run: mkdir -p docs
