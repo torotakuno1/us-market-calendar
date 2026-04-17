@@ -1,10 +1,25 @@
 # Economic Data Release Override
-# 公式スケジュールと異なる場合、ここで上書き
 # Format: KEY,YYYY-MM-DD,HH:MM(ET),Note
-#
-# KEY一覧: NFP,CPI,CORE_PCE,PPI,RETAIL,ISM_MFG,ISM_SVC,IP,
-#          HOUSING_S,EXIST_HOME,CONS_CONF,DURABLE,MICHIGAN_F,
-#          MICHIGAN_P,JOLTS,ADP,GDP_ADV,GDP_2ND,GDP_3RD
-#
-# 例) CPI,2026-05-13,08:30,May CPI moved due to holiday
-# 例) IP,2026-04-16,09:15,April G.17 release (confirmed by Fed)
+# 2026-04~07 official schedule (verified 2026-04-17)
+EXIST_HOME,2026-04-13,10:00,NAR official
+NFP,2026-05-08,08:30,BLS official
+PPI,2026-05-13,08:30,BLS confirmed
+RETAIL,2026-05-14,08:30,Census confirmed
+EXIST_HOME,2026-05-11,10:00,NAR official
+DURABLE,2026-05-28,08:30,Census confirmed
+PCE_INCOME,2026-05-28,08:30,BEA official
+MICHIGAN_F,2026-05-22,10:00,UMich schedule
+CPI,2026-06-10,08:30,BLS confirmed
+PPI,2026-06-11,08:30,BLS confirmed
+HOUSING_S,2026-06-16,08:30,Census confirmed
+RETAIL,2026-06-17,08:30,Census confirmed
+EXIST_HOME,2026-06-09,10:00,NAR official
+DURABLE,2026-06-25,08:30,Census confirmed
+PCE_INCOME,2026-06-25,08:30,BEA official
+NFP,2026-07-02,08:30,BLS Jul3=holiday
+ISM_SVC,2026-07-06,10:00,ISM Jul3=holiday
+CPI,2026-07-14,08:30,BLS confirmed
+PPI,2026-07-15,08:30,BLS confirmed
+EXIST_HOME,2026-07-09,10:00,NAR official
+PCE_INCOME,2026-07-30,08:30,BEA official
+MICHIGAN_P,2026-07-17,10:00,UMich 3rd Fri
