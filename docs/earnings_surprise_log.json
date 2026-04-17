@@ -62,5 +62,21 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-04-16",
+    "executed_at_jst": "2026-04-18T07:24:19+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "NFLX",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -10.2,
+        "price_change_pct": -9.7226,
+        "vs_implied": "織込やや超"
+      }
+    ]
   }
 ]
