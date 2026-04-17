@@ -7,7 +7,7 @@
   },
   {
     "target_date": "2026-04-16",
-    "executed_at_jst": "2026-04-16T21:56:03+09:00",
+    "executed_at_jst": "2026-04-17T09:32:59+09:00",
     "symbol_count": 1,
     "symbols": [
       {
@@ -15,7 +15,7 @@
         "tier": 2,
         "hour": "amc",
         "has_error": false,
-        "implied_move_pct": 7.15
+        "implied_move_pct": 7.35
       }
     ]
   }
