@@ -1,5 +1,60 @@
-"""決算結果の Beat/Miss 判定 + 織込変動との比較"""
+"""決算結果の Beat/Miss 判定 + 織込変動との比較
+
+修正 2026-04-17: AMC/BMO銘柄のアフターアワーズ/プレマーケット株価反応を
+yfinance経由で取得するよう変更。Finnhub /quote の dp はレギュラーセッション
+終値ベースのため、時間外の決算反応を反映しない問題を解消。
+"""
 import logging
+
+log = logging.getLogger(__name__)
+
+
+def _get_extended_hours_reaction(symbol: str, hour: str) -> tuple:
+    """
+    yfinance で時間外価格を取得し、決算反応の (price, change_pct) を返す。
+
+    AMC (引け後発表):
+        反応 = postMarketPrice vs regularMarketPrice (当日終値)
+    BMO (寄り前発表):
+        反応 = preMarketPrice vs regularMarketPreviousClose (前日終値)
+
+    取得失敗時は (None, None) を返す（呼び出し側で Finnhub dp にフォールバック）。
+    """
+    try:
+        import yfinance as yf
+        t = yf.Ticker(symbol)
+        info = t.info or {}
+
+        if hour == "amc":
+            post_price = info.get("postMarketPrice")
+            reg_price = info.get("regularMarketPrice")
+            if post_price and reg_price and reg_price > 0:
+                change = (post_price - reg_price) / reg_price * 100
+                log.info(
+                    f"  {symbol} AH price: ${post_price:.2f} vs close ${reg_price:.2f} "
+                    f"→ {change:+.2f}%"
+                )
+                return post_price, round(change, 2)
+            else:
+                log.info(f"  {symbol} AH price not available (post={post_price}, reg={reg_price})")
+
+        elif hour == "bmo":
+            pre_price = info.get("preMarketPrice")
+            prev_close = info.get("regularMarketPreviousClose")
+            if pre_price and prev_close and prev_close > 0:
+                change = (pre_price - prev_close) / prev_close * 100
+                log.info(
+                    f"  {symbol} PM price: ${pre_price:.2f} vs prev close ${prev_close:.2f} "
+                    f"→ {change:+.2f}%"
+                )
+                return pre_price, round(change, 2)
+            else:
+                log.info(f"  {symbol} PM price not available (pre={pre_price}, pc={prev_close})")
+
+    except Exception as ex:
+        log.warning(f"  {symbol} yfinance extended hours fetch failed: {ex}")
+
+    return None, None
 
 
 def check_surprise(entry: dict, quote: dict, preview_implied_move: float = None) -> dict:
@@ -56,12 +111,24 @@ def check_surprise(entry: dict, quote: dict, preview_implied_move: float = None)
         else:
             result["rev_verdict"] = "Miss"
 
-    # 株価変動
+    # ── 株価変動 ──────────────────────────────────
+    # Step 1: Finnhub dp をデフォルトとしてセット
     if quote:
         result["price_current"] = quote.get("c")
         result["price_change_pct"] = quote.get("dp")
 
-    # 織込変動との比較
+    # Step 2: AMC/BMO → yfinance で時間外価格を取得して上書き
+    hour = entry.get("hour", "")
+    symbol = entry.get("symbol", "")
+    if hour in ("amc", "bmo") and symbol:
+        ext_price, ext_change = _get_extended_hours_reaction(symbol, hour)
+        if ext_price is not None and ext_change is not None:
+            result["price_current"] = ext_price
+            result["price_change_pct"] = ext_change
+        else:
+            log.info(f"  {symbol} ({hour}): yfinance fallback failed, using Finnhub dp={result['price_change_pct']}")
+
+    # ── 織込変動との比較 ──────────────────────────
     price_dp = result["price_change_pct"]
     if preview_implied_move is not None and price_dp is not None:
         actual_abs = abs(price_dp)
