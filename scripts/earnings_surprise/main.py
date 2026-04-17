@@ -25,20 +25,20 @@ from zoneinfo import ZoneInfo
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 
-# 既存 earnings_preview のモジュールを import するために sys.path 追加
-PREVIEW_DIR = REPO_ROOT / "scripts" / "earnings_preview"
-if str(PREVIEW_DIR) not in sys.path:
-    sys.path.insert(0, str(PREVIEW_DIR))
+# サプライズ固有モジュールを先に import (message_builder 名前衝突回避)
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-# 既存モジュール再利用
-from finnhub_client import FinnhubClient
-from telegram_sender import send_telegram, send_error_notification
-
-# サプライズ固有モジュール
 from surprise_checker import check_surprise
 from message_builder import build_surprise_message
+
+# 既存 earnings_preview のモジュールを import (名前衝突しない finnhub_client, telegram_sender)
+PREVIEW_DIR = REPO_ROOT / "scripts" / "earnings_preview"
+if str(PREVIEW_DIR) not in sys.path:
+    sys.path.append(str(PREVIEW_DIR))  # append で後方に追加 (衝突防止)
+
+from finnhub_client import FinnhubClient
+from telegram_sender import send_telegram, send_error_notification
 
 # タイムゾーン
 ET = ZoneInfo("America/New_York")
