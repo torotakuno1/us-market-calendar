@@ -1,0 +1,5 @@
+*.bak 
+*.bak 
+verify_fred_release_ids.py
+find_fred_release_ids.py
+apply_fred_patches.py

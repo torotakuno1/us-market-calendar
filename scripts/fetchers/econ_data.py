@@ -148,7 +148,10 @@ def _fetch_bls_ical(start: date, end: date) -> dict[str, list[date]]:
                 result.setdefault(matched_key, []).append(d)
 
     except Exception as e:
-        print(f"  [bls_ical] error: {e}")
+        if "403" in str(e):
+            print(f"  [bls_ical] skipped (403 from Akamai; using FRED instead)")
+        else:
+            print(f"  [bls_ical] error: {e}")
 
     print(f"  [bls_ical] {sum(len(v) for v in result.values())} events from BLS iCal")
     return result

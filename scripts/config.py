@@ -226,27 +226,41 @@ def make_summary(imp: Importance, short_name: str, suffix: str = "") -> str:
 # config key → FRED release_id
 # https://fred.stlouisfed.org/releases で確認
 FRED_RELEASE_IDS: dict[str, int] = {
+    # ── 労働・雇用 ──
     "NFP":        50,   # Employment Situation
+    "ADP":        194,  # ADP National Employment Report
+    "JOLTS":      192,  # Job Openings and Labor Turnover Survey
+
+    # ── 物価 ──
     "CPI":        10,   # Consumer Price Index
     "PPI":        46,   # Producer Price Index
+    "IMPORT_PX":  188,  # U.S. Import and Export Price Indexes
+
+    # ── 成長・所得・消費 ──
     "GDP_ADV":    53,   # Gross Domestic Product
     "GDP_2ND":    53,
     "GDP_3RD":    53,
-    "RETAIL":     9,    # Advance Retail Sales
-    "PCE_INCOME": 54,   # Personal Income and Outlays (includes Core PCE)
-    "DURABLE":    58,   # Advance Report on Durable Goods
-    "HOUSING_S":  14,   # New Residential Construction (Housing Starts)
-    "EXIST_HOME": 99,   # Existing Home Sales
-    "NEW_HOME":   55,   # New Residential Sales
+    "RETAIL":     9,    # Advance Monthly Sales for Retail and Food Services
+    "PCE_INCOME": 54,   # Personal Income and Outlays (Core PCE含む)
     "TRADE_BAL":  51,   # U.S. International Trade in Goods and Services
-    "JOLTS":      110,  # Job Openings and Labor Turnover Survey
-    "IMPORT_PX":  97,   # U.S. Import/Export Price Indexes
-    "CONS_CONF":  108,  # Consumer Confidence (Note: Conference Board, not in FRED but try)
-    "ISM_MFG":    29,   # ISM Manufacturing PMI (ISM Report on Business)
-    "ISM_SVC":    29,   # ISM Non-Manufacturing
-    "MICHIGAN_P": 262,  # Surveys of Consumers (Univ of Michigan)
-    "MICHIGAN_F": 262,
-    "ADP":        474,  # ADP National Employment Report (if available)
-    "EMPIRE":     199,  # Empire State Manufacturing Survey
-    "CASE_SHILL": 199,  # S&P/Case-Shiller (partial)
+
+    # ── 住宅 ──
+    "HOUSING_S":  27,   # New Residential Construction (Housing Starts)
+    "EXIST_HOME": 291,  # Existing Home Sales (NAR)
+    "NEW_HOME":   97,   # New Residential Sales
+    "CASE_SHILL": 199,  # S&P Cotality Case-Shiller Home Price Indices
+
+    # ── 地区連銀サーベイ ──
+    "EMPIRE":     321,  # Empire State Manufacturing Survey (NY連銀)
+    "PHILLY":     351,  # Manufacturing Business Outlook Survey (Philly連銀)
+
+    # ── 消費者心理 ──
+    "MICHIGAN_P": 91,   # Surveys of Consumers (UMich)
+    "MICHIGAN_F": 91,
+
+    # ── 以下は FRED に将来日程なし。ルールベース + overrides CSV 運用 ──
+    # "DURABLE":   58,    # rid=58 は 400エラー
+    # "CONS_CONF": 108,   # Conference Board は FRED 未登録
+    # "ISM_MFG":   29,    # 2016-06-24 FRED から除外済み
+    # "ISM_SVC":   29,    # 同上
 }
