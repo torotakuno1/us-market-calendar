@@ -14,7 +14,7 @@ import requests
 
 from config import (
     INDICATORS, IndicatorDef, Importance, make_summary,
-    FRED_RELEASE_IDS,
+    FRED_RELEASE_IDS, FRED_MONTH_FILTERS,
 )
 from utils import (
     Event, et_to_utc,
@@ -276,25 +276,32 @@ def fetch_econ_data(
 
             # 3. FRED API
             elif ind.key in fred_dates and fred_dates[ind.key]:
-                month_matches = [
-                    dd for dd in fred_dates[ind.key]
-                    if dd.year == year and dd.month == month
-                ]
-                if month_matches:
-                    # 今日以降の将来日程を優先（過去の改定リリース等を除外）
-                    today_d = date.today()
-                    future_matches = [dd for dd in month_matches if dd >= today_d]
-                    if future_matches:
-                        release_date = future_matches[0]
-                    else:
-                        # 全て過去ならその月の最終日（通常はメインリリース）を採用
-                        release_date = month_matches[-1]
-                    source = "FRED API"
-                    extra_note = ""
-                else:
+                allowed_months = FRED_MONTH_FILTERS.get(ind.key)
+                if allowed_months is not None and month not in allowed_months:
+                    # GDP等、四半期ごとに特定月のみ発表される指標はスキップ
                     release_date = None
                     source = ""
                     extra_note = ""
+                else:
+                    month_matches = [
+                        dd for dd in fred_dates[ind.key]
+                        if dd.year == year and dd.month == month
+                    ]
+                    if month_matches:
+                        # 今日以降の将来日程を優先（過去の改定リリース等を除外）
+                        today_d = date.today()
+                        future_matches = [dd for dd in month_matches if dd >= today_d]
+                        if future_matches:
+                            release_date = future_matches[0]
+                        else:
+                            # 全て過去ならその月の最終日（通常はメインリリース）を採用
+                            release_date = month_matches[-1]
+                        source = "FRED API"
+                        extra_note = ""
+                    else:
+                        release_date = None
+                        source = ""
+                        extra_note = ""
 
             # 4. ルールベース
             else:

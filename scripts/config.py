@@ -264,3 +264,12 @@ FRED_RELEASE_IDS: dict[str, int] = {
     # "ISM_MFG":   29,    # 2016-06-24 FRED から除外済み
     # "ISM_SVC":   29,    # 同上
 }
+
+# ── FRED 月フィルタ ─────────────────────────────────
+# 同一 release_id が複数指標（GDP Advance/2nd/3rd 等）を含む場合、
+# 月で個別指標に振り分ける。設定されていないキーは全月マッチ。
+FRED_MONTH_FILTERS: dict[str, set[int]] = {
+    "GDP_ADV": {1, 4, 7, 10},   # Advance: 四半期終了後1ヶ月
+    "GDP_2ND": {2, 5, 8, 11},   # 2nd Estimate: 2ヶ月後
+    "GDP_3RD": {3, 6, 9, 12},   # 3rd Estimate: 3ヶ月後
+}

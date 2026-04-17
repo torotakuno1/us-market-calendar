@@ -5,3 +5,4 @@ find_fred_release_ids.py
 apply_fred_patches.py
 apply_fred_patches_v2.py
 apply_fred_patches_v3.py
+apply_fred_patches_v4.py
