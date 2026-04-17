@@ -40,6 +40,12 @@ if str(PREVIEW_DIR) not in sys.path:
 from finnhub_client import FinnhubClient
 from telegram_sender import send_telegram, send_error_notification
 
+# scripts/ 直下の共有モジュール
+SCRIPTS_COMMON_DIR = REPO_ROOT / "scripts"
+if str(SCRIPTS_COMMON_DIR) not in sys.path:
+    sys.path.append(str(SCRIPTS_COMMON_DIR))
+from position_merger import merge_positions
+
 # タイムゾーン
 ET = ZoneInfo("America/New_York")
 JST = ZoneInfo("Asia/Tokyo")
@@ -172,8 +178,9 @@ def main():
         sys.exit(1)
 
     try:
-        # 2. watchlist 読込
+        # 2. watchlist 読込 + ポジション自動マージ
         watchlist = load_watchlist(WATCHLIST_PATH)
+        merge_positions(watchlist)
 
         # 3. チェック対象の日付範囲を算出
         #    07:00 JST ≈ 17:00-18:00 ET 前日

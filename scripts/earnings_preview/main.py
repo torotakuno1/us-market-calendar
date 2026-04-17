@@ -32,6 +32,12 @@ from past_earnings import get_past_earnings_stats
 from message_builder import build_telegram_message
 from telegram_sender import send_telegram, send_error_notification
 
+# scripts/ 直下の共有モジュール
+SCRIPTS_DIR_COMMON = SCRIPT_DIR.parent
+if str(SCRIPTS_DIR_COMMON) not in sys.path:
+    sys.path.append(str(SCRIPTS_DIR_COMMON))
+from position_merger import merge_positions
+
 # タイムゾーン
 ET = ZoneInfo("America/New_York")
 JST = ZoneInfo("Asia/Tokyo")
@@ -172,11 +178,13 @@ def run_test_ping(finnhub_key: str, tg_token: str, tg_chat_id: str):
     """
     logging.info("=== TEST PING MODE ===")
 
-    # watchlist 読込確認
+    # watchlist 読込確認 + ポジションマージ
     try:
         watchlist = load_watchlist(WATCHLIST_PATH)
+        base_size = len(watchlist)
+        pos_added = merge_positions(watchlist)
         watchlist_size = len(watchlist)
-        watchlist_status = f"✅ {watchlist_size}銘柄"
+        watchlist_status = f"✅ {base_size}銘柄 + positions {pos_added}追加 = {watchlist_size}"
     except Exception as ex:
         watchlist_size = 0
         watchlist_status = f"❌ 読込失敗: {str(ex)[:80]}"
@@ -264,8 +272,9 @@ def main():
             sys.exit(1)
 
     try:
-        # 2. watchlist 読込
+        # 2. watchlist 読込 + ポジション自動マージ
         watchlist = load_watchlist(WATCHLIST_PATH)
+        merge_positions(watchlist)
 
         # 3. ターゲット期間算出: 「これから24時間以内に発表される決算」
         #    21:00 JST ≈ 07:00-08:00 ET (冬時間/夏時間)
