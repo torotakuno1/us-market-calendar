@@ -245,9 +245,9 @@ FRED_RELEASE_IDS: dict[str, int] = {
     "TRADE_BAL":  51,   # U.S. International Trade in Goods and Services
 
     # ── 住宅 ──
-    "HOUSING_S":  27,   # New Residential Construction (Housing Starts)
+    # "HOUSING_S":  27,   # rid=27 は複数サブリリース混在でノイズ → rule "cday:18"
     "EXIST_HOME": 291,  # Existing Home Sales (NAR)
-    "NEW_HOME":   97,   # New Residential Sales
+    # "NEW_HOME":   97,   # rid=97 は同上 → rule "cday:25"
     "CASE_SHILL": 199,  # S&P Cotality Case-Shiller Home Price Indices
 
     # ── 地区連銀サーベイ ──
@@ -255,8 +255,8 @@ FRED_RELEASE_IDS: dict[str, int] = {
     "PHILLY":     351,  # Manufacturing Business Outlook Survey (Philly連銀)
 
     # ── 消費者心理 ──
-    "MICHIGAN_P": 91,   # Surveys of Consumers (UMich)
-    "MICHIGAN_F": 91,
+    # "MICHIGAN_P": 91,   # rid=91 は確報日のみ → rule "weekday:4:2" (第2金曜)
+    "MICHIGAN_F": 91,   # Surveys of Consumers (UMich) 確報のみ
 
     # ── 以下は FRED に将来日程なし。ルールベース + overrides CSV 運用 ──
     # "DURABLE":   58,    # rid=58 は 400エラー
