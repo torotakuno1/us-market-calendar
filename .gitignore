@@ -6,3 +6,12 @@ apply_fred_patches.py
 apply_fred_patches_v2.py
 apply_fred_patches_v3.py
 apply_fred_patches_v4.py
+ 
+# v10 cleanup: 自動生成・バックアップファイル除外 
+__pycache__/ 
+*.pyc 
+*.bak 
+*.bak[0-9]* 
+check.ics 
+check_data.ics 
+/python 

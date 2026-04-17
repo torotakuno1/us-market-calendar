@@ -16,6 +16,13 @@ from config import (
     INDICATORS, IndicatorDef, Importance, make_summary,
     FRED_RELEASE_IDS, FRED_MONTH_FILTERS,
 )
+try:
+    from fetchers.omb_pfei import fetch_pfei_dates
+except ImportError:
+    try:
+        from omb_pfei import fetch_pfei_dates
+    except ImportError:
+        fetch_pfei_dates = None
 from utils import (
     Event, et_to_utc,
     nth_weekday, last_weekday_of_month, nth_business_day,
@@ -229,16 +236,45 @@ def fetch_econ_data(
     """
     優先順位:
       1. CSV上書き（手動補正）
-      2. BLS iCal（CPI, NFP, PPI等の公式日程）
-      3. FRED API（幅広い公式日程）
-      4. ルールベース推定（フォールバック）
+      2. OMB PFEI PDF（米国政府年次公式日程 — v10で追加）
+      3. BLS iCal（PFEI未掲載のBLS指標のフォールバック）
+      4. FRED API（PFEI未掲載で FRED 登録ありの指標）
+      5. ルールベース推定（最終フォールバック）
     """
     events = []
     overrides = _load_overrides(overrides_csv) if overrides_csv else {}
 
-    # API・iCalから公式日程を取得
+    # API・iCal・PDFから公式日程を取得
     fred_dates = _fetch_fred_dates(start, end)
     bls_dates = _fetch_bls_ical(start, end)
+
+    # v10: OMB PFEI PDFを最優先の公式ソースとして取り込む
+    pfei_dates: dict[str, list[date]] = {}
+    if fetch_pfei_dates is not None:
+        pfei_pdf_path = Path(__file__).resolve().parents[2] / "data" / f"pfei_{start.year}.pdf"
+        try:
+            pfei_dates = fetch_pfei_dates(
+                year=start.year,
+                local_fallback=pfei_pdf_path if pfei_pdf_path.exists() else None,
+            )
+            if pfei_dates:
+                print(f"  [pfei] {len(pfei_dates)} indicators loaded from OMB PFEI")
+        except Exception as e:
+            print(f"  [pfei] error: {e} — skipping PFEI layer")
+
+        # 年またぎの場合は翌年分も取得
+        if start.year != end.year:
+            for y in range(start.year + 1, end.year + 1):
+                pfei_pdf_y = Path(__file__).resolve().parents[2] / "data" / f"pfei_{y}.pdf"
+                try:
+                    additional = fetch_pfei_dates(
+                        year=y,
+                        local_fallback=pfei_pdf_y if pfei_pdf_y.exists() else None,
+                    )
+                    for k, v in additional.items():
+                        pfei_dates.setdefault(k, []).extend(v)
+                except Exception as e:
+                    print(f"  [pfei] {y} error: {e}")
 
     # ── 月次イベント ──
     d = date(start.year, start.month, 1)
@@ -259,7 +295,22 @@ def fetch_econ_data(
                 source = "CSV override"
                 extra_note = overrides[override_key].get("note", "")
 
-            # 2. BLS iCal（月に1つマッチするものを探す）
+            # 2. OMB PFEI PDF (v10で追加 — 米国政府公式の年次スケジュール)
+            elif ind.key in pfei_dates and pfei_dates[ind.key]:
+                month_matches = [
+                    dd for dd in pfei_dates[ind.key]
+                    if dd.year == year and dd.month == month
+                ]
+                if month_matches:
+                    release_date = month_matches[0]
+                    source = "OMB PFEI"
+                    extra_note = ""
+                else:
+                    release_date = None
+                    source = ""
+                    extra_note = ""
+
+            # 3. BLS iCal（月に1つマッチするものを探す）
             elif ind.key in bls_dates:
                 month_matches = [
                     dd for dd in bls_dates[ind.key]
