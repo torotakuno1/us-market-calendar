@@ -281,7 +281,14 @@ def fetch_econ_data(
                     if dd.year == year and dd.month == month
                 ]
                 if month_matches:
-                    release_date = month_matches[0]
+                    # 今日以降の将来日程を優先（過去の改定リリース等を除外）
+                    today_d = date.today()
+                    future_matches = [dd for dd in month_matches if dd >= today_d]
+                    if future_matches:
+                        release_date = future_matches[0]
+                    else:
+                        # 全て過去ならその月の最終日（通常はメインリリース）を採用
+                        release_date = month_matches[-1]
                     source = "FRED API"
                     extra_note = ""
                 else:
