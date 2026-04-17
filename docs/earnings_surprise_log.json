@@ -1,0 +1,66 @@
+[
+  {
+    "date": "2026-04-15",
+    "executed_at_jst": "2026-04-17T09:04:46+09:00",
+    "results_count": 7,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "JPM",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 8.0,
+        "price_change_pct": 1.314,
+        "vs_implied": null
+      },
+      {
+        "symbol": "BAC",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 8.6,
+        "price_change_pct": -1.4912,
+        "vs_implied": null
+      },
+      {
+        "symbol": "GS",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3.3,
+        "price_change_pct": 0.0567,
+        "vs_implied": null
+      },
+      {
+        "symbol": "JNJ",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.3,
+        "price_change_pct": -1.7304,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MS",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 10.9,
+        "price_change_pct": -2.244,
+        "vs_implied": null
+      },
+      {
+        "symbol": "NFLX",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 58.1,
+        "price_change_pct": 0.0743,
+        "vs_implied": "織込内"
+      },
+      {
+        "symbol": "WFC",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.1,
+        "price_change_pct": 1.1957,
+        "vs_implied": null
+      }
+    ]
+  }
+]
