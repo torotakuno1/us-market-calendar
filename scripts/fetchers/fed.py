@@ -83,19 +83,21 @@ def fetch_fed_events(start: date, end: date) -> list[Event]:
             ))
 
     # ── 鉱工業生産 G.17 ──
-    for d_str in G17_DATES_2026:
-        d = date.fromisoformat(d_str)
-        if start <= d <= end:
-            dt_utc = et_to_utc(d, time(9, 15))
-            events.append(Event(
-                name_short=make_summary(Importance.MEDIUM, "鉱工業生産 G17"),
-                name_full="Industrial Production and Capacity Utilization (G.17)",
-                dt_utc=dt_utc,
-                category="data",
-                importance=2,
-                details={"source": "federalreserve.gov"},
-                uid_hint=f"G17:{d.isoformat()}",
-            ))
+    # v10.2: PFEI PDFに移管済. fed.py側では生成しない.
+    # econ_data.py が INDICATORS["IP"] について PFEI から日付取得する.
+    # for d_str in G17_DATES_2026:
+    #     d = date.fromisoformat(d_str)
+    #     if start <= d <= end:
+    #         dt_utc = et_to_utc(d, time(9, 15))
+    #         events.append(Event(
+    #             name_short=make_summary(Importance.MEDIUM, "鉱工業生産 G17"),
+    #             name_full="Industrial Production and Capacity Utilization (G.17)",
+    #             dt_utc=dt_utc,
+    #             category="data",
+    #             importance=2,
+    #             details={"source": "federalreserve.gov"},
+    #             uid_hint=f"G17:{d.isoformat()}",
+    #         ))
 
     # ── Fed理事発言（スクレイピング）──
     speeches = _fetch_fed_speeches(start, end)
