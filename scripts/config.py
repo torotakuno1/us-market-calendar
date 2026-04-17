@@ -209,11 +209,13 @@ G17_DATES_2026: list[str] = [
 CHAIR_CANDIDATES: list[str] = [
     "Powell",    # 2018-02-05 ~ 2026-05-15 (任期満了)
     "Warsh",     # 2026-05-15 以降 (Trump 指名、上院承認待ち)
+    "Jefferson", # 副議長 (v5.0.1 追加、議長代行リスクヘッジ＋副議長発言取得)
 ]
 
 SCRAPE_TARGET_SPEAKERS: dict[str, int] = {
-    "Powell": 3,
-    "Warsh":  3,
+    "Powell":    3,   # 議長 → ★★★
+    "Warsh":     3,   # 議長 → ★★★
+    "Jefferson": 2,   # 副議長 → ★★ (v5.0.1)
 }
 
 # 全理事会メンバー（2026-04 時点・参考・将来 v5.2 以降で拡張可能）

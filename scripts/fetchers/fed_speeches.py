@@ -85,27 +85,46 @@ def _make_event(
     source: str,
     dt_time: time = DEFAULT_SPEECH_TIME,
 ) -> Event:
-    """Event オブジェクトを生成（議長のみ ★★★ 固定）"""
-    imp = Importance.HIGH  # 議長のみ対象 → 常に最高
+    """Event オブジェクトを生成（v5.0.1: スピーカー別に重要度分岐）"""
+    # v5.0.1: SCRAPE_TARGET_SPEAKERS から重要度を参照
+    imp_int = SCRAPE_TARGET_SPEAKERS.get(speaker, 2)
+    imp = Importance.HIGH if imp_int == 3 else Importance.MEDIUM
+
     etype = _classify_event_type(raw_text)
-    short_name = f"{speaker} {etype}"
-    if etype == "講演":
-        short_name = f"{speaker}講演"
+
+    # v5.0.1: 議長は日本語略称 (パウエル/ウォーシュ)、副議長以下は姓英字
+    speaker_jp_map = {
+        "Powell": "パウエル",
+        "Warsh":  "ウォーシュ",
+    }
+    speaker_disp = speaker_jp_map.get(speaker, speaker)
+
+    # 役職別の接頭辞 (★★★ の場合は議長を明示、★★ は Jefferson 等の姓のみ)
+    if imp == Importance.HIGH:
+        # 議長: "パウエル講演" / "パウエル議会証言" 等
+        short_name = f"{speaker_disp}{etype}"
+    else:
+        # 副議長以下: "Jefferson講演" 等 (姓 + 種別)
+        short_name = f"{speaker_disp}{etype}"
+
+    # UID 用のラベル
+    role_label = "CHAIR" if imp == Importance.HIGH else "VICE_CHAIR"
 
     dt_utc = et_to_utc(event_date, dt_time)
     return Event(
         name_short=make_summary(imp, short_name),
-        name_full=f"Fed Chair Speech: {speaker} — {etype} | {raw_text[:160]}",
+        name_full=f"Fed {role_label} Speech: {speaker} — {etype} | {raw_text[:160]}",
         dt_utc=dt_utc,
         category="fed",
         importance=int(imp),
         details={
             "speaker": speaker,
+            "role": role_label,
             "event_type": etype,
             "description": raw_text[:300],
             "source": source,
         },
-        uid_hint=f"FED_CHAIR:{speaker}:{event_date.isoformat()}:{etype}",
+        uid_hint=f"FED_{role_label}:{speaker}:{event_date.isoformat()}:{etype}",
     )
 
 
@@ -144,9 +163,8 @@ def _fetch_month_via_playwright(year: int, month: int) -> list[tuple[date, str]]
         print("  [fed_speeches] playwright not installed — skipping month render")
         return []
 
-    # URL パターンは月名英語フル or MM 数字の2系統あり
-    mname = MONTH_NAMES_EN[month - 1]
-    url = f"{FED_BASE}/newsevents/{year}-{mname}.htm"
+    # v5.0.1: URL は数字形式が正規 (月名英語形式は 404 を返す)
+    url = f"{FED_BASE}/newsevents/{year}-{month:02d}.htm"
 
     results: list[tuple[date, str]] = []
 
