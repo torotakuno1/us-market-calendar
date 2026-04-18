@@ -68,7 +68,13 @@ def main():
     print("[4/5] OpEx & VIX Settlement...")
     from fetchers.opex import fetch_opex_events
     opex_exc = SCRIPT_DIR.parent / "data" / "opex_exceptions.csv"
-    opex = fetch_opex_events(start, end, opex_exc if opex_exc.exists() else None)
+    vix_exc = SCRIPT_DIR.parent / "data" / "vix_exceptions.csv"
+    opex = fetch_opex_events(
+        start,
+        end,
+        opex_exc if opex_exc.exists() else None,
+        vix_exc if vix_exc.exists() else None,
+    )
     all_events.extend(opex)
     print(f"  → {len(opex)} events")
 
