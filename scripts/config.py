@@ -193,6 +193,34 @@ G17_DATES_2026: list[str] = [
 ]
 
 
+# ── Treasury Quarterly Refunding 日程 2025-2026 ─────────
+# 通例: 年4回（2月・5月・8月・11月の月初〜中旬水曜）、8:30 ET に
+#       Policy Statement + Auction Schedule + Buyback Schedule を一括公表。
+#
+# 2日前の月曜 15:00 ET に Financing Estimates（借入額見積り）が先行公表される。
+# 両方とも債券市場の注目イベント（前者★★、後者★★★）。
+#
+# 具体日は Treasury が各四半期末に次回日程を明示的に通知する仕組みのため、
+# 「第1水曜」等の機械ルールではなく、確定日を都度転記する運用とする。
+#
+# 出典: home.treasury.gov/policy-issues/financing-the-government/quarterly-refunding
+#       各回の press release "The next quarterly refunding announcement will take place on..."
+# 確認日: 2026-04-18 JST（一次情報、複数の Treasury press release で相互確認済）
+QUARTERLY_REFUNDING_DATES: list[dict] = [
+    # 2025（実施済み、参考履歴）
+    {"estimates": "2025-01-27", "refunding": "2025-01-29"},
+    {"estimates": "2025-04-28", "refunding": "2025-04-30"},
+    {"estimates": "2025-07-28", "refunding": "2025-07-30"},
+    {"estimates": "2025-11-03", "refunding": "2025-11-05"},
+    # 2026 (一次ソース確認済)
+    {"estimates": "2026-02-02", "refunding": "2026-02-04"},  # 実施済
+    {"estimates": "2026-05-04", "refunding": "2026-05-06"},  # ★ 次回 (Treasury公式告知)
+    # 以下は推定（第1水曜パターンでの仮置き、次の Refunding で確定する）
+    {"estimates": "2026-08-03", "refunding": "2026-08-05"},  # 推定
+    {"estimates": "2026-11-02", "refunding": "2026-11-04"},  # 推定
+]
+
+
 # ── Fed発言 フィルタ (v5で構造化) ─────────────────────
 # SCRAPE_TARGET_SPEAKERS: スクレイピング対象 = 議長候補のみ
 #   - key: 姓（URLパラメータや発言スクレイピングで部分一致に使用）

@@ -11,7 +11,7 @@ from typing import Optional
 
 import requests
 
-from config import Importance, make_summary
+from config import Importance, make_summary, QUARTERLY_REFUNDING_DATES
 from utils import Event, et_to_utc, UTC
 
 
@@ -110,6 +110,12 @@ def fetch_treasury_auctions(start: date, end: date) -> list[Event]:
         ))
 
     print(f"  [auction] {len(events)} auctions from API")
+
+    # ── Quarterly Refunding イベント（静的リスト） ──
+    refunding_events = _build_refunding_events(start, end)
+    events.extend(refunding_events)
+    print(f"  [auction] {len(refunding_events)} refunding events (static list)")
+
     return events
 
 
@@ -118,3 +124,64 @@ def _fallback_auctions(start: date, end: date) -> list[Event]:
     # Note/Bond は月に数回。正確な日程なしでは空を返す方が安全。
     print("  [auction] fallback: no events (API required for accurate dates)")
     return []
+
+
+def _build_refunding_events(start: date, end: date) -> list[Event]:
+    """
+    Treasury Quarterly Refunding 発表イベントを生成する。
+
+    各 Refunding サイクルで2イベント出力:
+      1. Financing Estimates（月曜 15:00 ET、★★）— 借入額見積り
+      2. Refunding Announcement（水曜 08:30 ET、★★★）— 入札スケジュール & Policy Statement
+
+    出典: home.treasury.gov/policy-issues/financing-the-government/quarterly-refunding
+    """
+    events = []
+
+    for entry in QUARTERLY_REFUNDING_DATES:
+        estimates_str = entry.get("estimates", "")
+        refunding_str = entry.get("refunding", "")
+
+        # ── 1. Financing Estimates（月曜 15:00 ET、★★） ──
+        if estimates_str:
+            try:
+                estimates_date = date.fromisoformat(estimates_str)
+                if start <= estimates_date <= end:
+                    dt_utc = et_to_utc(estimates_date, time(15, 0))
+                    events.append(Event(
+                        name_short=make_summary(Importance.MEDIUM, "借入額見積り"),
+                        name_full="Treasury Financing Estimates (Quarterly Refunding先行)",
+                        dt_utc=dt_utc,
+                        category="auction",
+                        importance=int(Importance.MEDIUM),
+                        details={
+                            "source": "home.treasury.gov/quarterly-refunding",
+                            "note": "翌々水曜 Refunding 発表の2日前、借入規模を先行公開",
+                        },
+                        uid_hint=f"TREAS_ESTIMATES:{estimates_date.isoformat()}",
+                    ))
+            except ValueError:
+                print(f"  [auction] invalid estimates date: {estimates_str}")
+
+        # ── 2. Refunding Announcement（水曜 08:30 ET、★★★） ──
+        if refunding_str:
+            try:
+                refunding_date = date.fromisoformat(refunding_str)
+                if start <= refunding_date <= end:
+                    dt_utc = et_to_utc(refunding_date, time(8, 30))
+                    events.append(Event(
+                        name_short=make_summary(Importance.HIGH, "四半期入札方針"),
+                        name_full="Treasury Quarterly Refunding Announcement",
+                        dt_utc=dt_utc,
+                        category="auction",
+                        importance=int(Importance.HIGH),
+                        details={
+                            "source": "home.treasury.gov/quarterly-refunding",
+                            "note": "四半期の借入計画・入札方針・Buyback Schedule 等を一括公表。長期金利に直接影響する ★★★ イベント",
+                        },
+                        uid_hint=f"TREAS_REFUNDING:{refunding_date.isoformat()}",
+                    ))
+            except ValueError:
+                print(f"  [auction] invalid refunding date: {refunding_str}")
+
+    return events
