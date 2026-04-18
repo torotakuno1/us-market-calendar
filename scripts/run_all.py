@@ -24,7 +24,11 @@ from utils import Event
 def main():
     parser = argparse.ArgumentParser(description="Generate US Market Calendar ICS files")
     parser.add_argument("--months", type=int, default=3, help="生成する月数（デフォルト3ヶ月先まで）")
-    parser.add_argument("--no-earnings", action="store_true", help="決算データをスキップ（API不通時）")
+    parser.add_argument(
+        "--no-earnings",
+        action="store_true",
+        help="決算データをスキップ。us_earnings.ics と us_market_all.ics は書き換えない（既存保全）",
+    )
     parser.add_argument("--output", type=str, default="docs", help="出力ディレクトリ")
     args = parser.parse_args()
 
@@ -96,7 +100,12 @@ def main():
     print(f"Total: {len(all_events)} events")
     print("Generating ICS files...")
     output_dir = SCRIPT_DIR.parent / args.output
-    results = build_ics_files(all_events, output_dir)
+    results = build_ics_files(
+        all_events,
+        output_dir,
+        skip_categories={"earnings"} if args.no_earnings else None,
+        skip_all_file=args.no_earnings,
+    )
 
     print()
     print("=== Done ===")

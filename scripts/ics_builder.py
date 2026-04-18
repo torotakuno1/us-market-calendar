@@ -162,9 +162,21 @@ def _create_calendar(name: str, color: str) -> Calendar:
     return cal
 
 
-def build_ics_files(events: list[Event], output_dir: str | Path) -> dict[str, Path]:
+def build_ics_files(
+    events: list[Event],
+    output_dir: str | Path,
+    skip_categories: set[str] | None = None,
+    skip_all_file: bool = False,
+) -> dict[str, Path]:
     """
     イベントリストからカテゴリ別ICSファイルを生成。
+
+    Args:
+        events: 全イベントのリスト
+        output_dir: 出力先ディレクトリ
+        skip_categories: このカテゴリは ICS ファイルを書き換えない（既存保全）
+                        例: {"earnings"} で us_earnings.ics を保全
+        skip_all_file: True の場合 us_market_all.ics を書き換えない
     """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -173,28 +185,51 @@ def build_ics_files(events: list[Event], output_dir: str | Path) -> dict[str, Pa
     for ev in events:
         by_cat.setdefault(ev.category, []).append(ev)
 
+    skip_cats = skip_categories or set()
     result = {}
     for cat, cal_info in CALENDARS.items():
-        cal = _create_calendar(cal_info["name"], cal_info["color"])
+        out_path = output_dir / cal_info["file"]
 
+        if cat in skip_cats:
+            if out_path.exists():
+                print(f"  [{cat}] SKIPPED (preserving existing {cal_info['file']})")
+                result[cat] = out_path
+            else:
+                print(f"  [{cat}] SKIPPED but {cal_info['file']} does not exist, creating empty")
+                cal = _create_calendar(cal_info["name"], cal_info["color"])
+                with open(out_path, "wb") as f:
+                    f.write(cal.to_ical())
+                result[cat] = out_path
+            continue
+
+        cal = _create_calendar(cal_info["name"], cal_info["color"])
         for ev in by_cat.get(cat, []):
             cal.add_component(_make_ics_event(ev))
 
-        out_path = output_dir / cal_info["file"]
         with open(out_path, "wb") as f:
             f.write(cal.to_ical())
         result[cat] = out_path
         print(f"  [{cat}] {len(by_cat.get(cat, []))} events -> {out_path.name}")
 
     # 全部入り
-    cal_all = _create_calendar("🇺🇸 US Market (All)", "#5856D6")
-    for ev in events:
-        cal_all.add_component(_make_ics_event(ev))
-
     all_path = output_dir / "us_market_all.ics"
-    with open(all_path, "wb") as f:
-        f.write(cal_all.to_ical())
-    print(f"  [ALL] {len(events)} events -> {all_path.name}")
-    result["all"] = all_path
+    if skip_all_file:
+        if all_path.exists():
+            print(f"  [ALL] SKIPPED (preserving existing us_market_all.ics)")
+            result["all"] = all_path
+        else:
+            cal_all = _create_calendar("🇺🇸 US Market (All)", "#5856D6")
+            with open(all_path, "wb") as f:
+                f.write(cal_all.to_ical())
+            print(f"  [ALL] SKIPPED but us_market_all.ics does not exist, creating empty")
+            result["all"] = all_path
+    else:
+        cal_all = _create_calendar("🇺🇸 US Market (All)", "#5856D6")
+        for ev in events:
+            cal_all.add_component(_make_ics_event(ev))
+        with open(all_path, "wb") as f:
+            f.write(cal_all.to_ical())
+        print(f"  [ALL] {len(events)} events -> {all_path.name}")
+        result["all"] = all_path
 
     return result
