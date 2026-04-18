@@ -221,6 +221,33 @@ QUARTERLY_REFUNDING_DATES: list[dict] = [
 ]
 
 
+# ── Russell US Indexes Reconstitution 日程 2026 ─────────
+# 2026年から半年化（年1回 → 年2回）。
+#
+# 出典: FTSE Russell 公式リリース
+#   - 2026年6月リバランス: https://www.lseg.com/.../russell-reconstitution-2026-schedule
+#   - 12月リバランス日変更告知（2025-11-05）: https://research.ftserussell.com/products/index-notices/home/getnotice?id=2617649
+# 確認日: 2026-04-18 JST
+#
+# ルール:
+#   - 6月リバランス: 第4金曜（実施）/ 4月最終営業日（Rank Day）
+#   - 12月リバランス: 第2金曜（実施）/ 10月最終営業日（Rank Day）※2026新設
+#
+# 重要度:
+#   - リバランス実施日: ★★★（年間最大の流動性イベント）
+#   - Rank Day: ★★
+#   - Preliminary List 初回: ★
+RUSSELL_DATES_2026: list[dict] = [
+    # 6月リバランス
+    {"type": "rank_day",       "date": "2026-04-30", "note": "4月Rank Day（木）— 指数構成銘柄の基準日"},
+    {"type": "preliminary",    "date": "2026-05-22", "note": "Preliminary List 初回公表（金 18:00 ET以降）"},
+    {"type": "reconstitution", "date": "2026-06-26", "note": "Russell Reconstitution（6月、第4金曜）— 終値で実施"},
+    # 12月リバランス（2026新設）
+    {"type": "rank_day",       "date": "2026-10-30", "note": "10月Rank Day（金）— 12月リバランス用、半年化新設"},
+    {"type": "reconstitution", "date": "2026-12-11", "note": "Russell Reconstitution（12月、第2金曜、新設）— 終値で実施"},
+]
+
+
 # ── Fed発言 フィルタ (v5で構造化) ─────────────────────
 # SCRAPE_TARGET_SPEAKERS: スクレイピング対象 = 議長候補のみ
 #   - key: 姓（URLパラメータや発言スクレイピングで部分一致に使用）
