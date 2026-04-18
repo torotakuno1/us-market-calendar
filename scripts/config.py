@@ -221,30 +221,26 @@ QUARTERLY_REFUNDING_DATES: list[dict] = [
 ]
 
 
-# ── Russell US Indexes Reconstitution 日程 2026 ─────────
-# 2026年から半年化（年1回 → 年2回）。
+# ── S&P 500 四半期リバランス 2026 ────────────────────────
+# S&P 500 / 400 / 600 は 3/6/9/12月の第3金曜 close にリバランス実施。
+# 実施日は Quad Witch と同日なので、本 ICS では「事前発表日」のみを独立イベントとして登録。
+# 実施日自体は既存の Quad Witch イベントで表現される。
 #
-# 出典: FTSE Russell 公式リリース
-#   - 2026年6月リバランス: https://www.lseg.com/.../russell-reconstitution-2026-schedule
-#   - 12月リバランス日変更告知（2025-11-05）: https://research.ftserussell.com/products/index-notices/home/getnotice?id=2617649
-# 確認日: 2026-04-18 JST
+# 事前発表: 実施日の約1週間前の金曜 market close 後（S&P Dow Jones Indices press release）
+# ルール: 四半期の最終金曜 - 7日（実施日第3金曜の1週間前金曜）
 #
-# ルール:
-#   - 6月リバランス: 第4金曜（実施）/ 4月最終営業日（Rank Day）
-#   - 12月リバランス: 第2金曜（実施）/ 10月最終営業日（Rank Day）※2026新設
-#
-# 重要度:
-#   - リバランス実施日: ★★★（年間最大の流動性イベント）
-#   - Rank Day: ★★
-#   - Preliminary List 初回: ★
-RUSSELL_DATES_2026: list[dict] = [
-    # 6月リバランス
-    {"type": "rank_day",       "date": "2026-04-30", "note": "4月Rank Day（木）— 指数構成銘柄の基準日"},
-    {"type": "preliminary",    "date": "2026-05-22", "note": "Preliminary List 初回公表（金 18:00 ET以降）"},
-    {"type": "reconstitution", "date": "2026-06-26", "note": "Russell Reconstitution（6月、第4金曜）— 終値で実施"},
-    # 12月リバランス（2026新設）
-    {"type": "rank_day",       "date": "2026-10-30", "note": "10月Rank Day（金）— 12月リバランス用、半年化新設"},
-    {"type": "reconstitution", "date": "2026-12-11", "note": "Russell Reconstitution（12月、第2金曜、新設）— 終値で実施"},
+# 出典: S&P Dow Jones Indices 公式（https://www.spglobal.com/spdji）
+#       quarterly reconstitution on 3rd Friday of March, June, September, December
+# 確認日: 2026-04-18 JST（一次情報）
+SP500_REBALANCE_DATES_2026: list[dict] = [
+    # Q1
+    {"announcement": "2026-03-13", "effective": "2026-03-20", "quarter": "Q1"},
+    # Q2
+    {"announcement": "2026-06-12", "effective": "2026-06-19", "quarter": "Q2"},
+    # Q3
+    {"announcement": "2026-09-11", "effective": "2026-09-18", "quarter": "Q3"},
+    # Q4
+    {"announcement": "2026-12-11", "effective": "2026-12-18", "quarter": "Q4"},
 ]
 
 

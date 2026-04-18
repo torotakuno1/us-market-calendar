@@ -5,10 +5,11 @@ Options Expiration & VIX Settlement Fetcher
 - 四半期OpEx (Quad Witch): 3/6/9/12月の第3金曜
 - VIX最終決済: 原則OpEx前日(水曜)、祝日等で不規則の場合は CSV 参照
 - 0DTE参考: 月曜・水曜・金曜のSPX/SPYオプション満期
-- Russell Reconstitution: 2026年から半年化（6月第4金曜 + 12月第2金曜）
+- S&P 500 四半期リバランス発表: 四半期最終金曜の1週間前金曜
 
 v8.1 (2026-04-18): VIX決済日のCSV例外対応追加
-v8.3 (2026-04-18): Russell Reconstitution 半年化対応
+v8.3 (2026-04-18): Russell Reconstitution 半年化対応（v8.3.1 で撤回）
+v8.3.1 (2026-04-18): Russell 削除、S&P 500 四半期リバランス発表イベントに差し替え
 """
 
 import csv
@@ -16,7 +17,7 @@ from datetime import date, time
 from pathlib import Path
 from typing import Optional
 
-from config import Importance, make_summary, RUSSELL_DATES_2026
+from config import Importance, make_summary, SP500_REBALANCE_DATES_2026
 from utils import Event, et_to_utc, third_friday, previous_wednesday
 
 
@@ -133,87 +134,102 @@ def fetch_opex_events(
         else:
             d = date(year, month + 1, 1)
 
-    # ── Russell Reconstitution イベント（静的リスト） ──
-    russell_events = _build_russell_events(start, end)
-    events.extend(russell_events)
+    # ── S&P 500 四半期リバランス発表イベント（静的リスト） ──
+    sp500_events = _build_sp500_rebalance_events(start, end)
+    events.extend(sp500_events)
+
+    # ── 既存 Quad Witch イベントの DESCRIPTION に S&P リバランス情報を付与 ──
+    events = _enrich_quad_witch_descriptions(events)
 
     return events
 
 
-def _build_russell_events(start: date, end: date) -> list[Event]:
+def _build_sp500_rebalance_events(start: date, end: date) -> list[Event]:
     """
-    FTSE Russell US Indexes Reconstitution イベントを生成する。
+    S&P 500 / 400 / 600 四半期リバランスの事前発表イベントを生成する。
 
-    2026年から半年化:
-      - 6月: Rank Day (4月最終営業日) → Preliminary List (5月第4金曜) → Reconstitution (6月第4金曜)
-      - 12月: Rank Day (10月最終営業日) → Reconstitution (12月第2金曜)
+    実施日（第3金曜）は既存の Quad Witch と同日なので重複登録せず、
+    事前発表日のみを独立イベントとして登録する。
 
-    タイムゾーン: 全て米国東部時間の市場終了 (16:00 ET) イベントとして一日扱い。
-    Preliminary List は 18:00 ET 発表だが、単純化のため同じ日付ラベルで登録。
-
-    重要度:
-      - reconstitution: ★★★（年間最大の流動性イベント）
-      - rank_day: ★★
-      - preliminary: ★
+    事前発表は実施日の約1週間前の金曜 market close 後に S&P Dow Jones Indices が
+    press release を出す。市場参加者は翌週の rebalance に向けて動くため注目度 ★★。
     """
     events = []
 
-    type_to_params = {
-        "reconstitution": {
-            "label": "Russell リバランス",
-            "importance": Importance.HIGH,
-            "full_name": "Russell US Indexes Reconstitution (終値で実施)",
-            "time_et": time(16, 0),
-        },
-        "rank_day": {
-            "label": "Russell Rank Day",
-            "importance": Importance.MEDIUM,
-            "full_name": "Russell US Indexes Rank Day (構成銘柄の基準日)",
-            "time_et": time(16, 0),
-        },
-        "preliminary": {
-            "label": "Russell 暫定リスト",
-            "importance": Importance.LOW,
-            "full_name": "Russell US Indexes Preliminary List (initial release)",
-            "time_et": time(18, 0),
-        },
-    }
-
-    for entry in RUSSELL_DATES_2026:
-        ev_type = entry.get("type", "")
-        date_str = entry.get("date", "")
-        note = entry.get("note", "")
-
-        params = type_to_params.get(ev_type)
-        if not params:
-            print(f"  [opex] unknown russell event type: {ev_type}")
-            continue
+    for entry in SP500_REBALANCE_DATES_2026:
+        ann_str = entry.get("announcement", "")
+        eff_str = entry.get("effective", "")
+        quarter = entry.get("quarter", "")
 
         try:
-            ev_date = date.fromisoformat(date_str)
+            ann_date = date.fromisoformat(ann_str)
+            eff_date = date.fromisoformat(eff_str)
         except ValueError:
-            print(f"  [opex] invalid russell date: {date_str}")
+            print(f"  [opex] invalid SP500 rebalance date: {ann_str} / {eff_str}")
             continue
 
-        if not (start <= ev_date <= end):
+        if not (start <= ann_date <= end):
             continue
 
-        dt_utc = et_to_utc(ev_date, params["time_et"])
+        # 発表は「金曜 market close 後」なので ET 16:30 を使う
+        dt_utc = et_to_utc(ann_date, time(16, 30))
 
         events.append(Event(
-            name_short=make_summary(params["importance"], params["label"]),
-            name_full=params["full_name"],
+            name_short=make_summary(Importance.MEDIUM, f"S&P {quarter}リバランス発表"),
+            name_full=f"S&P 500/400/600 Quarterly Rebalance Announcement ({quarter})",
             dt_utc=dt_utc,
             category="opex",
-            importance=int(params["importance"]),
+            importance=int(Importance.MEDIUM),
             all_day=False,
             details={
-                "source": "FTSE Russell (LSEG)",
-                "note": note,
+                "source": "S&P Dow Jones Indices",
+                "note": f"Effective {eff_date.isoformat()}（翌週の第3金曜 close = Quad Witch 同日）",
             },
-            uid_hint=f"RUSSELL_{ev_type.upper()}:{ev_date.isoformat()}",
+            uid_hint=f"SP500_REBAL_ANN:{ann_date.isoformat()}",
         ))
 
     if events:
-        print(f"  [opex] {len(events)} russell events (static list)")
+        print(f"  [opex] {len(events)} S&P 500 rebalance announcement events")
+    return events
+
+
+def _enrich_quad_witch_descriptions(events: list[Event]) -> list[Event]:
+    """
+    既存の Quad Witch イベント（opex カテゴリ、name_short に "Quad Witch" を含む）に、
+    S&P 500 四半期リバランス実施日であることを DESCRIPTION 末尾に追記する。
+
+    これにより Quad Witch イベントを見るだけで S&P リバランス実施日であることが分かる。
+    """
+    from datetime import timedelta
+
+    quad_witch_dates = {
+        date.fromisoformat(e["effective"])
+        for e in SP500_REBALANCE_DATES_2026
+    }
+
+    for ev in events:
+        if ev.category != "opex":
+            continue
+        if "Quad Witch" not in ev.name_short:
+            continue
+
+        ev_date = ev.dt_utc.date()
+        # UTC からズレる可能性があるので ET ベースでも確認
+        # （Quad Witch は 16:00 ET = 翌日 04:00 UTC の場合あり）
+        # 簡便のため ev.dt_utc.date() と ±1day の両方を見る
+        candidate_dates = {
+            ev_date,
+            ev_date - timedelta(days=1),
+            ev_date + timedelta(days=1),
+        }
+        match_date = next((d for d in candidate_dates if d in quad_witch_dates), None)
+        if not match_date:
+            continue
+
+        existing_note = ev.details.get("note", "")
+        enrichment = "S&P 500/400/600 四半期リバランス実施日（前週末発表→当日close実施）"
+        if enrichment not in existing_note:
+            new_note = f"{existing_note} | {enrichment}" if existing_note else enrichment
+            ev.details["note"] = new_note
+
     return events
