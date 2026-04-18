@@ -44,11 +44,30 @@ pip install -r requirements.txt
 python scripts/run_all.py --months 3
 ```
 
-### 環境変数（任意）
+### 環境変数
 
-| 変数 | 用途 |
-|---|---|
-| `FMP_API_KEY` | Financial Modeling Prep API（決算データ拡充） |
+| 変数 | 用途 | ローカル実行時 | 必須度 |
+|---|---|---|---|
+| `FRED_API_KEY` | 経済指標の公式日程取得 | 推奨 | 中 |
+| `FINNHUB_API_KEY` | 決算データ（高精度・BMO/AMC正確） | **推奨** | 高 |
+| `FMP_API_KEY` | Financial Modeling Prep API（決算予備） | 任意 | 低 |
+
+決算データの優先順位: **Finnhub 優先 → yfinance フォールバック**。
+`FINNHUB_API_KEY` が未設定/失敗の場合は yfinance で補完するが、精度が下がる。
+
+#### ローカル実行時の設定方法（Windows CMD）
+
+**一時的（現在のセッションのみ）**:
+```cmd
+set FINNHUB_API_KEY=your_key_here
+set FRED_API_KEY=your_key_here
+python scripts\run_all.py --months 3
+```
+
+**永続化（システム環境変数）**:
+1. Windows キー → 「環境変数」で検索 → 「システム環境変数の編集」
+2. 「環境変数」ボタン → ユーザー環境変数に追加
+3. CMD を開き直して反映
 
 ### GitHub Actions
 
@@ -56,10 +75,12 @@ python scripts/run_all.py --months 3
 - `docs/` に ICS を出力してコミット
 - GitHub Pages で配信 → iPhone自動同期
 
-### Secrets設定
+#### GitHub Secrets（本番環境）
 
-リポジトリ Settings → Secrets で `FMP_API_KEY` を設定（任意）。
-未設定の場合は `yfinance` にフォールバック。
+リポジトリ Settings → Secrets and variables → Actions で設定:
+- `FRED_API_KEY`
+- `FINNHUB_API_KEY` ← **これが未設定だと yfinance にフォールバックする**
+- `FMP_API_KEY`（任意）
 
 ## データソース
 
@@ -69,7 +90,7 @@ python scripts/run_all.py --months 3
 | FOMC | 静的リスト（年初確定） | 高 |
 | 入札 | TreasuryDirect API | 高 |
 | OpEx/VIX | 第3金曜ルール + CSV例外 | 高 |
-| 決算 | yfinance / FMP API | 中 |
+| 決算 | Finnhub（優先）/ yfinance（フォールバック） | 高/中 |
 
 ## カスタマイズ
 

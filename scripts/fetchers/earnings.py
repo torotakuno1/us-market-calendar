@@ -96,7 +96,7 @@ def _fetch_finnhub_per_ticker(start: date, end: date) -> dict[str, list[dict]]:
     """
     api_key = os.environ.get("FINNHUB_API_KEY", "")
     if not api_key:
-        print("  [finnhub] FINNHUB_API_KEY not set — skipping")
+        print("  [finnhub] SKIP: FINNHUB_API_KEY not set")
         return {}
 
     result = {}
@@ -129,11 +129,18 @@ def _fetch_finnhub_per_ticker(start: date, end: date) -> dict[str, list[dict]]:
                 result[ticker] = entries
                 found_count += 1
 
-        except Exception as e:
-            if "429" in str(e):
+        except requests.HTTPError as e:
+            status = e.response.status_code if (hasattr(e, "response") and e.response is not None) else "?"
+            if status == 401:
+                print(f"  [finnhub] FAIL: 401 Unauthorized — API キー無効の可能性、残りスキップ")
+                break
+            elif status == 429:
                 print(f"  [finnhub] rate limited at {ticker}, sleeping 60s...")
                 time_mod.sleep(60)
-            # 個別エラーは無視して次へ
+            else:
+                print(f"  [finnhub] FAIL: HTTP {status} at {ticker}")
+        except Exception as e:
+            print(f"  [finnhub] WARN: {type(e).__name__} at {ticker}: {e}")
 
         # レート制限対策: 60回/分 → 1.1秒間隔
         if (i + 1) % 55 == 0:
@@ -231,6 +238,11 @@ def fetch_earnings(start: date, end: date) -> list[Event]:
     finnhub_data = _fetch_finnhub_per_ticker(start, end)
 
     # Step 2: yfinance（Finnhubで取れなかった分を補完）
+    missing_count = len([t for t in MAJOR_EARNINGS_TICKERS if t not in finnhub_data])
+    if not finnhub_data:
+        print(f"  [yfinance] fallback: Finnhub 0件のため全 {missing_count} ティッカーをyfinanceで取得")
+    elif missing_count > 0:
+        print(f"  [yfinance] supplement: {missing_count} ティッカーがFinnhub未取得のため補完")
     yf_data = _fetch_yfinance_dates(start, end, skip_tickers=set(finnhub_data.keys()))
 
     # Step 3: マージ
