@@ -99,5 +99,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-04-20",
+    "executed_at_jst": "2026-04-22T07:27:12+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "UNH",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 8.7,
+        "price_change_pct": 6.9649,
+        "vs_implied": null
+      }
+    ]
   }
 ]
