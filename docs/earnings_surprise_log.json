@@ -155,5 +155,45 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-04-22",
+    "executed_at_jst": "2026-04-24T07:29:53+09:00",
+    "results_count": 4,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "TSLA",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 7.8,
+        "price_change_pct": -3.5586,
+        "vs_implied": null
+      },
+      {
+        "symbol": "BA",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 76.5,
+        "price_change_pct": 1.2409,
+        "vs_implied": null
+      },
+      {
+        "symbol": "INTC",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3052.2,
+        "price_change_pct": 2.3135,
+        "vs_implied": null
+      },
+      {
+        "symbol": "VRT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 16.0,
+        "price_change_pct": 5.4434,
+        "vs_implied": null
+      }
+    ]
   }
 ]
