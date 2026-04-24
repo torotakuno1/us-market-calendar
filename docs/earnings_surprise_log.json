@@ -195,5 +195,21 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-04-23",
+    "executed_at_jst": "2026-04-25T07:28:20+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "INTC",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3052.2,
+        "price_change_pct": 23.5999,
+        "vs_implied": null
+      }
+    ]
   }
 ]
