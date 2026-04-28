@@ -232,5 +232,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-04-27",
+    "executed_at_jst": "2026-04-29T07:41:49+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "V",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 4.8,
+        "price_change_pct": -0.113,
+        "vs_implied": null
+      }
+    ]
   }
 ]
