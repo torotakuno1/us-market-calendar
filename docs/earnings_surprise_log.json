@@ -248,5 +248,61 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-04-28",
+    "executed_at_jst": "2026-04-30T07:41:13+09:00",
+    "results_count": 6,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AMZN",
+        "tier": 3,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -6.4,
+        "price_change_pct": 1.2861,
+        "vs_implied": null
+      },
+      {
+        "symbol": "GOOGL",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 89.4,
+        "price_change_pct": 0.0457,
+        "vs_implied": null
+      },
+      {
+        "symbol": "META",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 6.0,
+        "price_change_pct": -0.3307,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MSFT",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3.1,
+        "price_change_pct": -1.1159,
+        "vs_implied": null
+      },
+      {
+        "symbol": "QCOM",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.5,
+        "price_change_pct": 4,
+        "vs_implied": null
+      },
+      {
+        "symbol": "V",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 4.8,
+        "price_change_pct": 8.2638,
+        "vs_implied": null
+      }
+    ]
   }
 ]
