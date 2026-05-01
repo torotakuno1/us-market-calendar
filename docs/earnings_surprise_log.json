@@ -384,5 +384,61 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-04-30",
+    "executed_at_jst": "2026-05-02T07:36:17+09:00",
+    "results_count": 6,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AAPL",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.1,
+        "price_change_pct": 3.2394,
+        "vs_implied": null
+      },
+      {
+        "symbol": "CAT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 18.8,
+        "price_change_pct": -0.0494,
+        "vs_implied": null
+      },
+      {
+        "symbol": "CVX",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 20.7,
+        "price_change_pct": -1.3864,
+        "vs_implied": null
+      },
+      {
+        "symbol": "LLY",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 27.0,
+        "price_change_pct": 3.074,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MA",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.4,
+        "price_change_pct": -1.4833,
+        "vs_implied": null
+      },
+      {
+        "symbol": "XOM",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -3.2,
+        "price_change_pct": -1.0238,
+        "vs_implied": null
+      }
+    ]
   }
 ]
