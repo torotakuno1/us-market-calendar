@@ -440,5 +440,29 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-05-01",
+    "executed_at_jst": "2026-05-03T07:24:55+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "CVX",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 20.7,
+        "price_change_pct": -1.3864,
+        "vs_implied": null
+      },
+      {
+        "symbol": "XOM",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -3.2,
+        "price_change_pct": -1.0238,
+        "vs_implied": null
+      }
+    ]
   }
 ]
