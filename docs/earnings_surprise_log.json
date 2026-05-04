@@ -471,5 +471,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-05-03",
+    "executed_at_jst": "2026-05-05T07:42:59+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "PLTR",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 15.8,
+        "price_change_pct": 1.3604,
+        "vs_implied": null
+      }
+    ]
   }
 ]
