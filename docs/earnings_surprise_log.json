@@ -527,5 +527,45 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-05-05",
+    "executed_at_jst": "2026-05-07T07:34:47+09:00",
+    "results_count": 4,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AMD",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 4.9,
+        "price_change_pct": 18.6145,
+        "vs_implied": null
+      },
+      {
+        "symbol": "ANET",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 5.8,
+        "price_change_pct": -13.6059,
+        "vs_implied": null
+      },
+      {
+        "symbol": "ARM",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 2.0,
+        "price_change_pct": 13.6277,
+        "vs_implied": null
+      },
+      {
+        "symbol": "SMCI",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 32.3,
+        "price_change_pct": 24.5419,
+        "vs_implied": null
+      }
+    ]
   }
 ]
