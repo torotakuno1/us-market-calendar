@@ -583,5 +583,12 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-05-07",
+    "executed_at_jst": "2026-05-09T07:40:46+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
   }
 ]
