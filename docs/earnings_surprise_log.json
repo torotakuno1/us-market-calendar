@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-04-19",
-    "executed_at_jst": "2026-04-21T07:30:01+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-04-20",
     "executed_at_jst": "2026-04-22T07:27:12+09:00",
     "results_count": 1,
@@ -597,6 +590,30 @@
         "eps_verdict": "Miss",
         "eps_surprise_pct": -2.2,
         "price_change_pct": 0.8772,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-05-19",
+    "executed_at_jst": "2026-05-21T08:00:17+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "NVDA",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 4.3,
+        "price_change_pct": 1.2964,
+        "vs_implied": null
+      },
+      {
+        "symbol": "HD",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -2.2,
+        "price_change_pct": 2.6914,
         "vs_implied": null
       }
     ]
