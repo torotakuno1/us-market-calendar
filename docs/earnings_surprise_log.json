@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-04-20",
-    "executed_at_jst": "2026-04-22T07:27:12+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "UNH",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 8.7,
-        "price_change_pct": 6.9649,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-04-21",
     "executed_at_jst": "2026-04-23T07:34:13+09:00",
     "results_count": 4,
@@ -614,6 +598,30 @@
         "eps_verdict": "Miss",
         "eps_surprise_pct": -2.2,
         "price_change_pct": 2.6914,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-05-20",
+    "executed_at_jst": "2026-05-22T07:54:33+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "NVDA",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 4.3,
+        "price_change_pct": -1.772,
+        "vs_implied": null
+      },
+      {
+        "symbol": "WMT",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": -0.6,
+        "price_change_pct": -7.2679,
         "vs_implied": null
       }
     ]
