@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-04-23",
-    "executed_at_jst": "2026-04-25T07:28:20+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "INTC",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 3052.2,
-        "price_change_pct": 23.5999,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-04-24",
     "executed_at_jst": "2026-04-26T07:20:16+09:00",
     "results_count": 0,
@@ -565,6 +549,13 @@
   {
     "date": "2026-05-22",
     "executed_at_jst": "2026-05-24T07:38:20+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-05-23",
+    "executed_at_jst": "2026-05-25T07:42:35+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
