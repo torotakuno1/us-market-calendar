@@ -1,45 +1,5 @@
 [
   {
-    "date": "2026-05-04",
-    "executed_at_jst": "2026-05-06T07:40:41+09:00",
-    "results_count": 4,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "AMD",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 4.9,
-        "price_change_pct": 4.0171,
-        "vs_implied": null
-      },
-      {
-        "symbol": "ANET",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 5.8,
-        "price_change_pct": -1.3903,
-        "vs_implied": null
-      },
-      {
-        "symbol": "PLTR",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 15.8,
-        "price_change_pct": -6.9301,
-        "vs_implied": null
-      },
-      {
-        "symbol": "SMCI",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 32.3,
-        "price_change_pct": -0.3223,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-05-05",
     "executed_at_jst": "2026-05-07T07:34:47+09:00",
     "results_count": 4,
@@ -386,6 +346,22 @@
         "eps_verdict": "In-line",
         "eps_surprise_pct": -0.2,
         "price_change_pct": -0.4859,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-06-03",
+    "executed_at_jst": "2026-06-05T07:57:29+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AVGO",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": -0.2,
+        "price_change_pct": -12.5869,
         "vs_implied": null
       }
     ]
