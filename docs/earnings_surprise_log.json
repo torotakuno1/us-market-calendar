@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-05-06",
-    "executed_at_jst": "2026-05-08T07:45:34+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "ARM",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 2.0,
-        "price_change_pct": -10.1096,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-05-07",
     "executed_at_jst": "2026-05-09T07:40:46+09:00",
     "results_count": 0,
@@ -329,6 +313,13 @@
   {
     "date": "2026-06-04",
     "executed_at_jst": "2026-06-06T07:49:56+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-06-05",
+    "executed_at_jst": "2026-06-07T07:46:48+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
