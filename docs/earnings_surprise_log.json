@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-05-10",
-    "executed_at_jst": "2026-05-12T07:41:53+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "CEG",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 5.7,
-        "price_change_pct": -1.2976,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-05-11",
     "executed_at_jst": "2026-05-13T07:49:19+09:00",
     "results_count": 1,
@@ -323,5 +307,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-06-09",
+    "executed_at_jst": "2026-06-11T08:15:48+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "ORCL",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 5.4,
+        "price_change_pct": -2.2108,
+        "vs_implied": null
+      }
+    ]
   }
 ]
