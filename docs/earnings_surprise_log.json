@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-05-11",
-    "executed_at_jst": "2026-05-13T07:49:19+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "CEG",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 5.7,
-        "price_change_pct": -2.0321,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-05-12",
     "executed_at_jst": "2026-05-14T07:52:00+09:00",
     "results_count": 0,
@@ -320,6 +304,30 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 5.4,
         "price_change_pct": -2.2108,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-06-10",
+    "executed_at_jst": "2026-06-12T08:11:05+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "ADBE",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.4,
+        "price_change_pct": -6.2473,
+        "vs_implied": null
+      },
+      {
+        "symbol": "ORCL",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 5.4,
+        "price_change_pct": -8.5263,
         "vs_implied": null
       }
     ]
