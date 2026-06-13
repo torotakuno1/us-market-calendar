@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-05-13",
-    "executed_at_jst": "2026-05-15T07:44:27+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-05-14",
     "executed_at_jst": "2026-05-16T07:40:06+09:00",
     "results_count": 0,
@@ -340,5 +333,12 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-06-12",
+    "executed_at_jst": "2026-06-14T07:48:09+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
   }
 ]
