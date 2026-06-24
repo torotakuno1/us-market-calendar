@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-05-24",
-    "executed_at_jst": "2026-05-26T07:45:43+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-05-25",
     "executed_at_jst": "2026-05-27T07:57:11+09:00",
     "results_count": 0,
@@ -288,5 +281,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-06-23",
+    "executed_at_jst": "2026-06-25T07:55:04+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "MU",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 17.3,
+        "price_change_pct": -0.31,
+        "vs_implied": null
+      }
+    ]
   }
 ]
