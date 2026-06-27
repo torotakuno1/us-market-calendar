@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-05-27",
-    "executed_at_jst": "2026-05-29T08:03:18+09:00",
-    "results_count": 1,
-    "pending_count": 1,
-    "results": [
-      {
-        "symbol": "CRM",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 23.2,
-        "price_change_pct": -0.7549,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-05-28",
     "executed_at_jst": "2026-05-30T07:59:58+09:00",
     "results_count": 1,
@@ -294,6 +278,13 @@
   {
     "date": "2026-06-25",
     "executed_at_jst": "2026-06-27T07:54:41+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-06-26",
+    "executed_at_jst": "2026-06-28T07:45:38+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
