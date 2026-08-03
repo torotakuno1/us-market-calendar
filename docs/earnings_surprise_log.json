@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-03",
-    "executed_at_jst": "2026-07-05T07:41:37+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-04",
     "executed_at_jst": "2026-07-06T07:43:11+09:00",
     "results_count": 0,
@@ -580,5 +573,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-08-02",
+    "executed_at_jst": "2026-08-04T07:43:18+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "PLTR",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 15.7,
+        "price_change_pct": 2.1047,
+        "vs_implied": null
+      }
+    ]
   }
 ]
