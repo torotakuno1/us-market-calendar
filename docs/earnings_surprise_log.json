@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-04",
-    "executed_at_jst": "2026-07-06T07:43:11+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-05",
     "executed_at_jst": "2026-07-07T07:50:44+09:00",
     "results_count": 0,
@@ -586,6 +579,30 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 15.7,
         "price_change_pct": 2.1047,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-03",
+    "executed_at_jst": "2026-08-05T07:46:41+09:00",
+    "results_count": 2,
+    "pending_count": 2,
+    "results": [
+      {
+        "symbol": "CAT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 30.5,
+        "price_change_pct": 5.6034,
+        "vs_implied": null
+      },
+      {
+        "symbol": "PLTR",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 15.7,
+        "price_change_pct": 29.4548,
         "vs_implied": null
       }
     ]
