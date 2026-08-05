@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-05",
-    "executed_at_jst": "2026-07-07T07:50:44+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-06",
     "executed_at_jst": "2026-07-08T07:46:00+09:00",
     "results_count": 0,
@@ -603,6 +596,46 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 15.7,
         "price_change_pct": 29.4548,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-04",
+    "executed_at_jst": "2026-08-06T07:44:26+09:00",
+    "results_count": 4,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AMD",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.8,
+        "price_change_pct": -7.0442,
+        "vs_implied": null
+      },
+      {
+        "symbol": "ANET",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 13.0,
+        "price_change_pct": 3.5694,
+        "vs_implied": null
+      },
+      {
+        "symbol": "CAT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 30.5,
+        "price_change_pct": -0.6229,
+        "vs_implied": null
+      },
+      {
+        "symbol": "LLY",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 38.1,
+        "price_change_pct": 4.8562,
         "vs_implied": null
       }
     ]
