@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-12",
-    "executed_at_jst": "2026-07-14T07:39:52+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-13",
     "executed_at_jst": "2026-07-15T07:41:46+09:00",
     "results_count": 4,
@@ -671,6 +664,22 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 74.1,
         "price_change_pct": 0.445,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-11",
+    "executed_at_jst": "2026-08-13T07:25:13+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "SMCI",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 74.1,
+        "price_change_pct": 19.019,
         "vs_implied": null
       }
     ]
