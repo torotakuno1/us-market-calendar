@@ -1,61 +1,5 @@
 [
   {
-    "date": "2026-07-14",
-    "executed_at_jst": "2026-07-16T07:42:59+09:00",
-    "results_count": 6,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "JPM",
-        "tier": 3,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 4.0,
-        "price_change_pct": 1.1724,
-        "vs_implied": null
-      },
-      {
-        "symbol": "BAC",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 5.9,
-        "price_change_pct": 1.6001,
-        "vs_implied": null
-      },
-      {
-        "symbol": "GS",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 40.7,
-        "price_change_pct": 1.0588,
-        "vs_implied": null
-      },
-      {
-        "symbol": "JNJ",
-        "tier": 2,
-        "eps_verdict": "In-line",
-        "eps_surprise_pct": 0.9,
-        "price_change_pct": -2.6906,
-        "vs_implied": null
-      },
-      {
-        "symbol": "MS",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 14.1,
-        "price_change_pct": 0.3865,
-        "vs_implied": null
-      },
-      {
-        "symbol": "WFC",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 15.2,
-        "price_change_pct": 2.6029,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-07-15",
     "executed_at_jst": "2026-07-17T07:41:58+09:00",
     "results_count": 4,
@@ -647,6 +591,13 @@
   {
     "date": "2026-08-12",
     "executed_at_jst": "2026-08-14T07:25:57+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-08-13",
+    "executed_at_jst": "2026-08-15T07:01:42+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
