@@ -1,29 +1,5 @@
 [
   {
-    "date": "2026-07-16",
-    "executed_at_jst": "2026-07-18T07:34:06+09:00",
-    "results_count": 2,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "NFLX",
-        "tier": 2,
-        "eps_verdict": "In-line",
-        "eps_surprise_pct": -0.5,
-        "price_change_pct": -7.2629,
-        "vs_implied": "織込内"
-      },
-      {
-        "symbol": "UNH",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 29.9,
-        "price_change_pct": 0.6401,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-07-17",
     "executed_at_jst": "2026-07-19T07:33:15+09:00",
     "results_count": 0,
@@ -565,6 +541,13 @@
   {
     "date": "2026-08-14",
     "executed_at_jst": "2026-08-16T07:00:12+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-08-15",
+    "executed_at_jst": "2026-08-17T06:59:21+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
