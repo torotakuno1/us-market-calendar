@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-19",
-    "executed_at_jst": "2026-07-21T07:41:01+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-20",
     "executed_at_jst": "2026-07-22T07:39:25+09:00",
     "results_count": 0,
@@ -557,6 +550,22 @@
         "eps_verdict": "In-line",
         "eps_surprise_pct": 0.9,
         "price_change_pct": -0.1154,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-18",
+    "executed_at_jst": "2026-08-20T07:07:23+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "HD",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.9,
+        "price_change_pct": 2.0178,
         "vs_implied": null
       }
     ]
