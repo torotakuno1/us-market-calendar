@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-07-20",
-    "executed_at_jst": "2026-07-22T07:39:25+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-07-21",
     "executed_at_jst": "2026-07-23T07:45:02+09:00",
     "results_count": 2,
@@ -566,6 +559,22 @@
         "eps_verdict": "In-line",
         "eps_surprise_pct": 0.9,
         "price_change_pct": 2.0178,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "executed_at_jst": "2026-08-21T07:09:26+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "WMT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 8.1,
+        "price_change_pct": -9.1514,
         "vs_implied": null
       }
     ]
