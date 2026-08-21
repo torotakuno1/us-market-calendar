@@ -1,29 +1,5 @@
 [
   {
-    "date": "2026-07-21",
-    "executed_at_jst": "2026-07-23T07:45:02+09:00",
-    "results_count": 2,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "GOOGL",
-        "tier": 3,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 206.2,
-        "price_change_pct": -1.4576,
-        "vs_implied": null
-      },
-      {
-        "symbol": "TSLA",
-        "tier": 3,
-        "eps_verdict": "Miss",
-        "eps_surprise_pct": -35.3,
-        "price_change_pct": -1.2984,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-07-22",
     "executed_at_jst": "2026-07-24T07:40:40+09:00",
     "results_count": 3,
@@ -575,6 +551,22 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 8.1,
         "price_change_pct": -9.1514,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "executed_at_jst": "2026-08-22T07:02:23+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "WMT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 8.1,
+        "price_change_pct": -0.1348,
         "vs_implied": null
       }
     ]
