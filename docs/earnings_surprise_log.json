@@ -1,29 +1,5 @@
 [
   {
-    "date": "2026-07-27",
-    "executed_at_jst": "2026-07-29T07:44:15+09:00",
-    "results_count": 2,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "BA",
-        "tier": 2,
-        "eps_verdict": "Miss",
-        "eps_surprise_pct": -142.1,
-        "price_change_pct": 4.7565,
-        "vs_implied": null
-      },
-      {
-        "symbol": "V",
-        "tier": 2,
-        "eps_verdict": "In-line",
-        "eps_surprise_pct": 0.8,
-        "price_change_pct": 1.1199,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-07-28",
     "executed_at_jst": "2026-07-30T07:42:16+09:00",
     "results_count": 6,
@@ -535,6 +511,13 @@
     "executed_at_jst": "2026-08-27T11:14:26+09:00",
     "results_count": 0,
     "pending_count": 2,
+    "results": []
+  },
+  {
+    "date": "2026-08-27",
+    "executed_at_jst": "2026-08-28T14:50:02+09:00",
+    "results_count": 0,
+    "pending_count": 0,
     "results": []
   }
 ]
