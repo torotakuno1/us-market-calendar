@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-07-31",
-    "executed_at_jst": "2026-08-02T07:40:01+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "CVX",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 7.9,
-        "price_change_pct": 2.3504,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-08-01",
     "executed_at_jst": "2026-08-03T07:40:58+09:00",
     "results_count": 0,
@@ -353,6 +337,13 @@
   {
     "date": "2026-08-30",
     "executed_at_jst": "2026-09-01T09:48:39+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-08-31",
+    "executed_at_jst": "2026-09-02T08:34:57+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
