@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-08-01",
-    "executed_at_jst": "2026-08-03T07:40:58+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-08-02",
     "executed_at_jst": "2026-08-04T07:43:18+09:00",
     "results_count": 1,
@@ -347,5 +340,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-09-01",
+    "executed_at_jst": "2026-09-03T08:36:03+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AVGO",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.6,
+        "price_change_pct": -0.66,
+        "vs_implied": null
+      }
+    ]
   }
 ]
