@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-08-06",
-    "executed_at_jst": "2026-08-08T07:20:10+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "CEG",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 4.3,
-        "price_change_pct": 3.3665,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-08-07",
     "executed_at_jst": "2026-08-09T07:11:32+09:00",
     "results_count": 0,
@@ -286,6 +270,13 @@
   {
     "date": "2026-09-05",
     "executed_at_jst": "2026-09-07T08:15:09+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-09-06",
+    "executed_at_jst": "2026-09-08T08:48:04+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
