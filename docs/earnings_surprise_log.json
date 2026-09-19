@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-08-18",
-    "executed_at_jst": "2026-08-20T07:07:23+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "HD",
-        "tier": 2,
-        "eps_verdict": "In-line",
-        "eps_surprise_pct": 0.9,
-        "price_change_pct": 2.0178,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-08-19",
     "executed_at_jst": "2026-08-21T07:09:26+09:00",
     "results_count": 1,
@@ -284,6 +268,13 @@
   {
     "date": "2026-09-17",
     "executed_at_jst": "2026-09-19T08:38:04+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-09-18",
+    "executed_at_jst": "2026-09-20T08:37:43+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
