@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-08-19",
-    "executed_at_jst": "2026-08-21T07:09:26+09:00",
-    "results_count": 1,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "WMT",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 8.1,
-        "price_change_pct": -9.1514,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-08-20",
     "executed_at_jst": "2026-08-22T07:02:23+09:00",
     "results_count": 1,
@@ -275,6 +259,13 @@
   {
     "date": "2026-09-18",
     "executed_at_jst": "2026-09-20T08:37:43+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-09-19",
+    "executed_at_jst": "2026-09-21T08:35:38+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
