@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-08-23",
-    "executed_at_jst": "2026-08-25T07:08:55+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-08-24",
     "executed_at_jst": "2026-08-26T07:07:30+09:00",
     "results_count": 0,
@@ -260,5 +253,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-09-23",
+    "executed_at_jst": "2026-09-25T09:03:23+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "COST",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": -0.8,
+        "price_change_pct": -0.9086,
+        "vs_implied": null
+      }
+    ]
   }
 ]
