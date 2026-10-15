@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-14",
-    "executed_at_jst": "2026-09-16T08:45:13+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-15",
     "executed_at_jst": "2026-09-17T08:53:40+09:00",
     "results_count": 0,
@@ -339,6 +332,30 @@
         "eps_verdict": "In-line",
         "eps_surprise_pct": -0.3,
         "price_change_pct": 0.1982,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-10-14",
+    "executed_at_jst": "2026-10-16T08:55:03+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "BAC",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -3.1,
+        "price_change_pct": 0.6032,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MS",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.1,
+        "price_change_pct": 0.3251,
         "vs_implied": null
       }
     ]
