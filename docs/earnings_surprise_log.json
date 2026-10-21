@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-19",
-    "executed_at_jst": "2026-09-21T08:35:38+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-20",
     "executed_at_jst": "2026-09-22T09:18:31+09:00",
     "results_count": 0,
@@ -359,5 +352,21 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-10-19",
+    "executed_at_jst": "2026-10-21T09:10:15+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "NFLX",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3.7,
+        "price_change_pct": -1.6607,
+        "vs_implied": "織込内"
+      }
+    ]
   }
 ]
