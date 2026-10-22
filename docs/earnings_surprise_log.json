@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-20",
-    "executed_at_jst": "2026-09-22T09:18:31+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-21",
     "executed_at_jst": "2026-09-23T08:52:10+09:00",
     "results_count": 0,
@@ -365,6 +358,38 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 3.7,
         "price_change_pct": -1.6607,
+        "vs_implied": "織込内"
+      }
+    ]
+  },
+  {
+    "date": "2026-10-20",
+    "executed_at_jst": "2026-10-22T09:15:45+09:00",
+    "results_count": 3,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "META",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 23.3,
+        "price_change_pct": 0.471,
+        "vs_implied": null
+      },
+      {
+        "symbol": "TSLA",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 10.1,
+        "price_change_pct": 3.4144,
+        "vs_implied": null
+      },
+      {
+        "symbol": "NFLX",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 3.7,
+        "price_change_pct": -5.3137,
         "vs_implied": "織込内"
       }
     ]
