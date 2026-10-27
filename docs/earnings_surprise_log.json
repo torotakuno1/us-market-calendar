@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-25",
-    "executed_at_jst": "2026-09-27T08:55:54+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-26",
     "executed_at_jst": "2026-09-28T09:00:42+09:00",
     "results_count": 0,
@@ -389,6 +382,13 @@
   {
     "date": "2026-10-24",
     "executed_at_jst": "2026-10-26T08:36:20+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-10-25",
+    "executed_at_jst": "2026-10-27T09:53:11+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
