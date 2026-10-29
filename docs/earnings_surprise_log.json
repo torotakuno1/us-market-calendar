@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-27",
-    "executed_at_jst": "2026-09-29T10:17:51+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-28",
     "executed_at_jst": "2026-09-30T09:47:11+09:00",
     "results_count": 0,
@@ -406,6 +399,54 @@
         "eps_verdict": "In-line",
         "eps_surprise_pct": -0.7,
         "price_change_pct": -0.5691,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-10-27",
+    "executed_at_jst": "2026-10-29T10:17:12+09:00",
+    "results_count": 5,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "GOOGL",
+        "tier": 3,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -31.8,
+        "price_change_pct": 1.3444,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MSFT",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.5,
+        "price_change_pct": -0.0602,
+        "vs_implied": null
+      },
+      {
+        "symbol": "BA",
+        "tier": 2,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -59.0,
+        "price_change_pct": -0.6184,
+        "vs_implied": null
+      },
+      {
+        "symbol": "V",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": -0.7,
+        "price_change_pct": -0.3135,
+        "vs_implied": null
+      },
+      {
+        "symbol": "VRT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 19.5,
+        "price_change_pct": 16.4845,
         "vs_implied": null
       }
     ]
