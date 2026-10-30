@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-09-28",
-    "executed_at_jst": "2026-09-30T09:47:11+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-09-29",
     "executed_at_jst": "2026-10-01T09:51:27+09:00",
     "results_count": 1,
@@ -447,6 +440,78 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 19.5,
         "price_change_pct": 16.4845,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-10-28",
+    "executed_at_jst": "2026-10-30T10:21:52+09:00",
+    "results_count": 8,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AMZN",
+        "tier": 3,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -5.5,
+        "price_change_pct": -4.2459,
+        "vs_implied": null
+      },
+      {
+        "symbol": "GOOGL",
+        "tier": 3,
+        "eps_verdict": "Miss",
+        "eps_surprise_pct": -31.8,
+        "price_change_pct": -12.6412,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MSFT",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.5,
+        "price_change_pct": -0.1638,
+        "vs_implied": null
+      },
+      {
+        "symbol": "CAT",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": 0.6,
+        "price_change_pct": -9.2503,
+        "vs_implied": null
+      },
+      {
+        "symbol": "INTC",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 30.1,
+        "price_change_pct": -3.6219,
+        "vs_implied": null
+      },
+      {
+        "symbol": "LLY",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 13.1,
+        "price_change_pct": 6.6289,
+        "vs_implied": null
+      },
+      {
+        "symbol": "MA",
+        "tier": 2,
+        "eps_verdict": "In-line",
+        "eps_surprise_pct": -0.1,
+        "price_change_pct": 4.1602,
+        "vs_implied": null
+      },
+      {
+        "symbol": "VRT",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 19.5,
+        "price_change_pct": 1.2266,
         "vs_implied": null
       }
     ]
