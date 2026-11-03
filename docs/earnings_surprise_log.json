@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-10-02",
-    "executed_at_jst": "2026-10-04T09:07:27+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-10-03",
     "executed_at_jst": "2026-10-05T09:13:20+09:00",
     "results_count": 0,
@@ -571,5 +564,29 @@
     "results_count": 0,
     "pending_count": 0,
     "results": []
+  },
+  {
+    "date": "2026-11-01",
+    "executed_at_jst": "2026-11-03T12:05:19+09:00",
+    "results_count": 2,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "AAPL",
+        "tier": 3,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 1.1,
+        "price_change_pct": -1.8309,
+        "vs_implied": null
+      },
+      {
+        "symbol": "PLTR",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 5.2,
+        "price_change_pct": -3.134,
+        "vs_implied": null
+      }
+    ]
   }
 ]
