@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-10-10",
-    "executed_at_jst": "2026-10-12T09:45:13+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-10-11",
     "executed_at_jst": "2026-10-13T11:43:50+09:00",
     "results_count": 0,
@@ -677,6 +670,22 @@
         "eps_verdict": "Beat",
         "eps_surprise_pct": 30.2,
         "price_change_pct": 10.4581,
+        "vs_implied": null
+      }
+    ]
+  },
+  {
+    "date": "2026-11-09",
+    "executed_at_jst": "2026-11-11T10:29:32+09:00",
+    "results_count": 1,
+    "pending_count": 0,
+    "results": [
+      {
+        "symbol": "CEG",
+        "tier": 2,
+        "eps_verdict": "Beat",
+        "eps_surprise_pct": 30.2,
+        "price_change_pct": -3.0171,
         "vs_implied": null
       }
     ]
