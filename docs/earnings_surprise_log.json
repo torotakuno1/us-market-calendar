@@ -1,12 +1,5 @@
 [
   {
-    "date": "2026-10-11",
-    "executed_at_jst": "2026-10-13T11:43:50+09:00",
-    "results_count": 0,
-    "pending_count": 0,
-    "results": []
-  },
-  {
     "date": "2026-10-12",
     "executed_at_jst": "2026-10-14T09:38:32+09:00",
     "results_count": 5,
@@ -689,5 +682,12 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-11-10",
+    "executed_at_jst": "2026-11-12T11:32:39+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
   }
 ]
