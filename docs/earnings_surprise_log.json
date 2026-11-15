@@ -1,29 +1,5 @@
 [
   {
-    "date": "2026-10-14",
-    "executed_at_jst": "2026-10-16T08:55:03+09:00",
-    "results_count": 2,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "BAC",
-        "tier": 2,
-        "eps_verdict": "Miss",
-        "eps_surprise_pct": -3.1,
-        "price_change_pct": 0.6032,
-        "vs_implied": null
-      },
-      {
-        "symbol": "MS",
-        "tier": 2,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 1.1,
-        "price_change_pct": 0.3251,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-10-15",
     "executed_at_jst": "2026-10-17T08:57:17+09:00",
     "results_count": 0,
@@ -588,6 +564,13 @@
   {
     "date": "2026-11-12",
     "executed_at_jst": "2026-11-14T10:51:45+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
+  },
+  {
+    "date": "2026-11-13",
+    "executed_at_jst": "2026-11-15T10:20:34+09:00",
     "results_count": 0,
     "pending_count": 0,
     "results": []
