@@ -1,29 +1,5 @@
 [
   {
-    "date": "2026-10-21",
-    "executed_at_jst": "2026-10-23T09:12:36+09:00",
-    "results_count": 2,
-    "pending_count": 0,
-    "results": [
-      {
-        "symbol": "META",
-        "tier": 3,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 27.8,
-        "price_change_pct": -6.9776,
-        "vs_implied": null
-      },
-      {
-        "symbol": "TSLA",
-        "tier": 3,
-        "eps_verdict": "Beat",
-        "eps_surprise_pct": 10.1,
-        "price_change_pct": -3.0766,
-        "vs_implied": null
-      }
-    ]
-  },
-  {
     "date": "2026-10-22",
     "executed_at_jst": "2026-10-24T09:04:41+09:00",
     "results_count": 0,
@@ -592,5 +568,12 @@
         "vs_implied": null
       }
     ]
+  },
+  {
+    "date": "2026-11-20",
+    "executed_at_jst": "2026-11-22T10:41:02+09:00",
+    "results_count": 0,
+    "pending_count": 0,
+    "results": []
   }
 ]
